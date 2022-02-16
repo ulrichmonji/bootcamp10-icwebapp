@@ -88,7 +88,7 @@ pipeline {
       }
 
       stage('Deploy application ') {
-        agent any { docker { image '${ANSIBLE_IMAGE_AGENT}'  } }
+        agent { docker { image '${ANSIBLE_IMAGE_AGENT}'  } }
         stages {
             stage ("Install Ansible role dependencies") {
                 steps {

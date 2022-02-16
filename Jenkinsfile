@@ -79,8 +79,8 @@ pipeline {
           steps {
              script {
                sh '''
-                  echo \$VAULT_KEY > vault.key
-                  echo \$PRIVATE_KEY > id_rsa
+                  echo \$VAULT_KEY > ~/vault.key
+                  echo \$PRIVATE_KEY > ~/id_rsa
                   chmod 600 id_rsa
                '''
              }
@@ -101,7 +101,7 @@ pipeline {
             stage ("Ping  targeted hosts") {
                 steps {
                     script {
-                        sh 'ansible all -m ping --private-key id_rsa'
+                        sh 'ansible all -m ping --private-key ~/id_rsa'
                     }
                 }
             }
@@ -124,7 +124,7 @@ pipeline {
                     stage ("PRODUCTION - Install Docker all target hosts") {
                         steps {
                             script {
-                                sh 'cd sources/ansible-ressources && ansible-playbook playbooks/install-docker.yml --vault-password-file vault.key --private-key id_rsa -l prod'
+                                sh 'cd sources/ansible-ressources && ansible-playbook playbooks/install-docker.yml --vault-password-file ~/vault.key --private-key ~/id_rsa -l prod'
                             }
                         }
                     }
@@ -132,14 +132,14 @@ pipeline {
                     stage ("PRODUCTION - deploy pgadmin") {
                         steps {
                             script {
-                                sh 'cd sources/ansible-ressources && ansible-playbook playbooks/deploy-pgadmin.yml --vault-password-file vault.key --private-key id_rsa -l pg_admin'
+                                sh 'cd sources/ansible-ressources && ansible-playbook playbooks/deploy-pgadmin.yml --vault-password-file ~/vault.key --private-key ~/id_rsa -l pg_admin'
                             }
                         }
                     }
                     stage ("PRODUCTION - deploy odoo") {
                         steps {
                             script {
-                                sh 'cd sources/ansible-ressources && ansible-playbook playbooks/deploy-odoo.yml --vault-password-file vault.key --private-key id_rsa -l odoo'
+                                sh 'cd sources/ansible-ressources && ansible-playbook playbooks/deploy-odoo.yml --vault-password-file ~/vault.key --private-key ~/id_rsa -l odoo'
                             }
                         }
                     }
@@ -147,7 +147,7 @@ pipeline {
                     stage ("PRODUCTION - deploy ic-webapp") {
                         steps {
                             script {
-                                sh 'cd sources/ansible-ressources && ansible-playbook playbooks/deploy-ic-webapp.yml --vault-password-file vault.key --private-key id_rsa -l ic_webapp'
+                                sh 'cd sources/ansible-ressources && ansible-playbook playbooks/deploy-ic-webapp.yml --vault-password-file ~/vault.key --private-key ~/id_rsa -l ic_webapp'
                             }
                         }
                     }

@@ -79,8 +79,8 @@ pipeline {
           steps {
              script {
                sh '''
-                  echo \$VAULT_KEY > ~/vault.key
-                  echo \$PRIVATE_KEY > ~/id_rsa
+                  echo $VAULT_KEY > ~/vault.key
+                  echo $PRIVATE_KEY > ~/id_rsa
                   chmod 600 id_rsa
                '''
              }

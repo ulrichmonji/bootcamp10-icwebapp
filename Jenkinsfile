@@ -88,7 +88,7 @@ pipeline {
       }
 
       stage('Deploy application ') {
-        agent { docker { image $ANSIBLE_IMAGE_AGENT  } }
+        agent { docker { image 'registry.gitlab.com/robconnolly/docker-ansible:latest'  } }
         stages {
             stage ("Install Ansible role dependencies") {
                 steps {
@@ -110,7 +110,7 @@ pipeline {
                 steps {
                     script {
                         sh '''
-                            ansible-lint -x 306 sources/playbooks/deploy.yml
+                            echo ansible-lint -x 306 sources/playbooks/install-docker.yml
                             echo ${GIT_BRANCH}
                                                 
                         '''

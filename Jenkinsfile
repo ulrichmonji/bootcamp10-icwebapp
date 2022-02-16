@@ -124,7 +124,7 @@ pipeline {
                     stage ("PRODUCTION - Install Docker all target hosts") {
                         steps {
                             script {
-                                sh 'ansible-playbook sources/playbooks/install-docker.yml --vault-password-file vault.key --private-key id_rsa -l prod'
+                                sh 'ansible-playbook sources/ansible-ressources/playbooks/install-docker.yml --vault-password-file vault.key --private-key id_rsa -l prod'
                             }
                         }
                     }
@@ -132,14 +132,14 @@ pipeline {
                     stage ("PRODUCTION - deploy pgadmin") {
                         steps {
                             script {
-                                sh 'ansible-playbook sources/playbooks/deploy-pgadmin.yml --vault-password-file vault.key --private-key id_rsa -l pg_admin'
+                                sh 'ansible-playbook sources/ansible-ressources/playbooks/deploy-pgadmin.yml --vault-password-file vault.key --private-key id_rsa -l pg_admin'
                             }
                         }
                     }
                     stage ("PRODUCTION - deploy odoo") {
                         steps {
                             script {
-                                sh 'ansible-playbook sources/playbooks/deploy-odoo.yml --vault-password-file vault.key --private-key id_rsa -l odoo'
+                                sh 'ansible-playbook sources/ansible-ressources/playbooks/deploy-odoo.yml --vault-password-file vault.key --private-key id_rsa -l odoo'
                             }
                         }
                     }
@@ -147,7 +147,7 @@ pipeline {
                     stage ("PRODUCTION - deploy ic-webapp") {
                         steps {
                             script {
-                                sh 'ansible-playbook sources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key --private-key id_rsa -l ic_webapp'
+                                sh 'ansible-playbook sources/ansible-ressources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key --private-key id_rsa -l ic_webapp'
                             }
                         }
                     }
@@ -162,7 +162,7 @@ pipeline {
                         steps {
                             script {
                                 sh '''
-                                    ansible-playbook sources/playbooks/install-docker.yml --vault-password-file vault.key --private-key id_rsa -l dev
+                                    ansible-playbook sources/ansible-ressources/playbooks/install-docker.yml --vault-password-file vault.key --private-key id_rsa -l dev
                                                         
                                 '''
                             }
@@ -173,7 +173,7 @@ pipeline {
                         steps {
                             script {
                                 sh '''
-                                    ansible-playbook sources/playbooks/deploy-pgadmin.yml --vault-password-file vault.key --private-key id_rsa -l pg_admin_dev
+                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-pgadmin.yml --vault-password-file vault.key --private-key id_rsa -l pg_admin_dev
                                                         
                                 '''
                             }
@@ -183,7 +183,7 @@ pipeline {
                         steps {
                             script {
                                 sh '''
-                                    ansible-playbook sources/playbooks/deploy-odoo.yml --vault-password-file vault.key --private-key id_rsa -l odoo_dev
+                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-odoo.yml --vault-password-file vault.key --private-key id_rsa -l odoo_dev
                                                         
                                 '''
                             }
@@ -194,7 +194,7 @@ pipeline {
                         steps {
                             script {
                                 sh '''
-                                    ansible-playbook sources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key --private-key id_rsa -l ic_webapp_dev
+                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key --private-key id_rsa -l ic_webapp_dev
                                                         
                                 '''
                             }

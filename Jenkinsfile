@@ -3,7 +3,7 @@
 
 pipeline {
     environment {
-        IMAGE_NAME = "ic-webapp:v1.0"
+        IMAGE_NAME = "ic-webapp"
         APP_CONTAINER_PORT = "8000"
         APP_EXPOSED_PORT = "80"
         IMAGE_TAG = "v1.0" /* Metttre les tags comme paramètre du job a fournir lors du lancement*/

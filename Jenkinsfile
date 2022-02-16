@@ -4,8 +4,8 @@
 pipeline {
     environment {
         IMAGE_NAME = "ic-webapp"
-        APP_CONTAINER_PORT = "8000"
-        APP_EXPOSED_PORT = "80"
+        APP_CONTAINER_PORT = "8080"
+        APP_EXPOSED_PORT = "8000"
         IMAGE_TAG = "v1.0" /* Metttre les tags comme paramètre du job a fournir lors du lancement*/
         DOCKERHUB_ID = "choco1992"
         DOCKERHUB_PASSWORD = credentials('dockerhub_password')

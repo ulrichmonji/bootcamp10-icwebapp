@@ -124,7 +124,11 @@ pipeline {
                     stage ("PRODUCTION - Install Docker all target hosts") {
                         steps {
                             script {
-                                sh 'cd sources/ansible-ressources && ansible-playbook playbooks/install-docker.yml --vault-password-file \${WORKSPACE}/vault.key --private-key \${WORKSPACE}/id_rsa -l prod'
+                                sh '''
+                                    apt update -y
+                                    apt install sshpass -y
+                                    cd sources/ansible-ressources && ansible-playbook playbooks/install-docker.yml --vault-password-file \${WORKSPACE}/vault.key --private-key \${WORKSPACE}/id_rsa -l prod
+                                '''
                             }
                         }
                     }

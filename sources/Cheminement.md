@@ -82,6 +82,7 @@ Du coup la variable d'en HOST_IP doit contenir cette IP machine. Sur notre infra
 
 
 ## Partie II : CI avec Jenkins
+Ici, le Jenkinsfile est celui du [tag v1.0](https://github.com/choco1992/ic-webapp/blob/v1.0/Jenkinsfile)
 
 #### Lancer le Jenkins
 #### Récupération du token pour L'IHM et creation de votre compte

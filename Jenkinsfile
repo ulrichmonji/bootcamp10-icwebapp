@@ -32,11 +32,10 @@ pipeline {
             steps {
                 script{
                     sh '''
-#                   apk --no-cache add npm
-#                    npm install -g snyk-to-html
-                    echo "Starting scan of Dockerfile ${DOCKERFILE_NAME}..." '''
+                    echo "Starting scan of Dockerfile ${DOCKERFILE_NAME}..." 
+                    '''
                     sh 'docker run --rm -it -e SNYK_TOKEN=$SNYK_TOKEN -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/app snyk/snyk:docker snyk test --docker $DOCKERHUB_ID/$IMAGE_NAME:$IMAGE_TAG --file=./sources/app/${DOCKERFILE_NAME} --json > resultats_${DOCKERFILE_NAME}.json'
-                    sh 'echo `grep 'message' resultats_${DOCKERFILE_NAME}.json`'
+                    sh 'echo $(grep message resultats_${DOCKERFILE_NAME}.json)'
                     sh 'snyk-to-html -i resultats_${DOCKERFILE_NAME}.json -o resultats_${DOCKERFILE_NAME}.html'
                     sh ''' echo "Scan ended"'
                     '''

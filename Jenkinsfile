@@ -34,7 +34,7 @@ pipeline {
                     sh '''
                     echo "Starting scan of Dockerfile ${DOCKERFILE_NAME}..." 
                     '''
-                    sh 'docker run --rm -it -e SNYK_TOKEN=$SNYK_TOKEN -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/app snyk/snyk:docker snyk test --docker $DOCKERHUB_ID/$IMAGE_NAME:$IMAGE_TAG --file=./sources/app/${DOCKERFILE_NAME} --json > resultats_${DOCKERFILE_NAME}.json'
+                    sh 'docker run --rm -e SNYK_TOKEN=$SNYK_TOKEN -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/app snyk/snyk:docker snyk test --docker $DOCKERHUB_ID/$IMAGE_NAME:$IMAGE_TAG --file=./sources/app/${DOCKERFILE_NAME} --json > resultats_${DOCKERFILE_NAME}.json'
                     sh 'echo $(grep message resultats_${DOCKERFILE_NAME}.json)'
                     sh 'snyk-to-html -i resultats_${DOCKERFILE_NAME}.json -o resultats_${DOCKERFILE_NAME}.html'
                     sh ''' echo "Scan ended"'
@@ -59,7 +59,7 @@ pipeline {
 #                   apk --no-cache add npm
 #                    npm install -g snyk-to-html
                     echo "Starting scan of Builded image  ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG..."
-                    docker run --rm -it -e SNYK_TOKEN=${SNYK_TOKEN} -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/app snyk/snyk:docker snyk test --docker $DOCKERHUB_ID/$IMAGE_NAME:$IMAGE_TAG --json > resultats_${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG.json
+                    docker run --rm -e SNYK_TOKEN=${SNYK_TOKEN} -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/app snyk/snyk:docker snyk test --docker $DOCKERHUB_ID/$IMAGE_NAME:$IMAGE_TAG --json > resultats_${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG.json
                     echo `grep 'message' resultats_${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG.json`
 #                   snyk-to-html -i resultats_${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG.json -o resultats_${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG.html
                     echo "Scan ended"

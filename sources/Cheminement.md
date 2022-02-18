@@ -78,7 +78,7 @@ Les caractéristiques de notre job Pipeline sont les suivantes :
 |IMAGE_TAG          | Paramètre du job |      v1.0       | tag de l'image docker        |
 |DOCKERFILE_NAME    | Paramètre du job | Dockerfile_v1.0 | Dockerfile à utiliser        |
 |HOST_IP            | Paramètre du job |   127.0.0.1     | adresse IP de la machine hote|
-|APP_EXPOSED_PORT   | Paramètre du job |      8000       | adresse IP de la machine hote|
+|APP_EXPOSED_PORT   | Paramètre du job |      8000       | Port expose de l'appli       |
  
 
 

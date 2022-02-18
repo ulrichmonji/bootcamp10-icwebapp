@@ -34,13 +34,10 @@ pipeline {
                     sh '''
                     echo "Starting Image scan ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG ..." 
                     '''
-/*                    sh 'docker run --rm -e SNYK_TOKEN=$SNYK_TOKEN -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/app snyk/snyk:docker snyk test --docker $DOCKERHUB_ID/$IMAGE_NAME:$IMAGE_TAG --json > resultats_${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG.json ||  if [[ $? -gt "1" ]];then echo "PASS"; else false; fi '  */
                     sh 'SCAN_RESULT=$(docker run --rm -e SNYK_TOKEN=$SNYK_TOKEN -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/app snyk/snyk:docker snyk test --docker $DOCKERHUB_ID/$IMAGE_NAME:$IMAGE_TAG --json ||  if [[ $? -gt "1" ]];then echo -e "Warning, you must see scan result \n" ;  false; elif [[ $? -eq "0" ]]; then   echo "PASS : Nothing to Do"; elif [[ $? -eq "1" ]]; then   echo "Warning, passing with something to do";  else false; fi)'
-/*                    sh 'echo  "$(grep message resultats_${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG.json)"' */
                     sh 'echo There is Scan result : '
                     sh 'echo $SCAN_RESULT'
-/*                    sh 'snyk-to-html -i resultats_${DOCKERFILE_NAME}.json -o resultats_${DOCKERFILE_NAME}.html'  */
-                    sh ''' echo "Scan ended"'
+                    sh ''' echo "Scan ended"
                     '''
                 }
             }

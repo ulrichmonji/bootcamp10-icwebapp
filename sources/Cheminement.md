@@ -8,38 +8,38 @@ Ce petit tuto explique progressivement  comment mettre en oeuvre le prpojet fil 
 ## Partie I : Build, test (**docker**) et déploiement l'application (**kubernetes**)
 
 ### Build, test et push de l'image Docker
-Mes variables utilisées : 
-APP_EXPOSED_PORT = **8000**
-IMAGE_NAME = **ic-webapp**
-IMAGE_TAG = **v1.0**
-DOCKERHUB_ID = **hoco1992**
-DOCKERFILE_NAME = **Dockerfile_v1.0**
+- Mes variables utilisées : 
+- APP_EXPOSED_PORT = **8000**
+- IMAGE_NAME = **ic-webapp**
+- IMAGE_TAG = **v1.0**
+- DOCKERHUB_ID = **choco1992**
+- DOCKERFILE_NAME = **Dockerfile_v1.0**
 
-- Creation d'un répertoire de travail
-- Téléchargement du vagrantfile et ses dépendances dans le répertoire de travail
-- Ouvrir un terminal dans ce répertoire de travail et déployer Minikube dans virtualbox
-- Une fois minikube OK, télécharger les sources dans la VM minikube (cette VM contient déja docker installé)
+#### Creation d'un répertoire de travail
+#### Téléchargement du vagrantfile et ses dépendances dans le répertoire de travail
+#### Ouvrir un terminal dans ce répertoire de travail et déployer Minikube dans virtualbox
+#### Une fois minikube OK, télécharger les sources dans la VM minikube (cette VM contient déja docker installé)
 > git clone https://github.com/choco1992/ic-webapp.git
 > cd ic-webapp
-- Lancer le build de l'image et tester le fonctionnement du conteneur :
+#### Lancer le build de l'image et tester le fonctionnement du conteneur :
 > docker build --no-cache -f ./sources/app/${DOCKERFILE_NAME} -t $IMAGE_NAME:$IMAGE_TAG ./sources/app
 >docker run -d --name test-ic-webapp -p ${APP_EXPOSED_PORT}:8080 ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG
-- RDV dans le navigateur de votre machine, taper http://**<votre_ip_machine>**:**${APP_EXPOSED_PORT}** pour finaliser le test
-- Supprimer le conteneur une fois le test validé et pousser l'image dans dockerhub
+#### RDV dans le navigateur de votre machine, taper http://**<votre_ip_machine>**:**${APP_EXPOSED_PORT}** pour finaliser le test
+#### Supprimer le conteneur une fois le test validé et pousser l'image dans dockerhub
 > docker rm -f test-ic-webapp
 > docker tag $IMAGE_NAME:$IMAGE_TAG ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG
 > docker login
 > docker push ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG
 
 ### Automatisation via docker-compose **(Bonus)**
-- On créé les répertoires devant servir de volumes et on set les droits. Pour des besoins de faciliter, on va attribuer tous les droits sur ces foldes
+#### On créé les répertoires devant servir de volumes et on set les droits. Pour des besoins de faciliter, on va attribuer tous les droits sur ces foldes
 > sudo mkdir -p /data_docker/lib-odoo /data_docker/pgadmin4 /data_docker/postgres /data_docker/addons /data_docker/config
 > sudo chmod 777 -R  /data_docker/lib-odoo /data_docker/pgadmin4 /data_docker/postgres /data_docker/addons /data_docker/config 
-- Installation docker-compose
+#### Installation docker-compose
 > sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 > sudo chmod +x /usr/local/bin/docker-compose
 
-#### Infos
+#### **Infos**
 le docker-compose contient les variables ODOO_URL et  PGADMIN_URL qui doivent etre renseignées avec l'ip machine de la VM vagrant.
 ce sont les lignes suivantes : 
 >            - "ODOO_URL=http://${HOST_IP}:8069/"
@@ -47,23 +47,23 @@ ce sont les lignes suivantes :
 Du coup la variable d'en HOST_IP doit contenir cette IP machine. Sur notre infra, on va travailler avec l'interface **enp0s8**. Du coup la commande suivante permets de facilement récupérer cette IP machine : 
 > ip -4  a show enp0s8 | grep inet | awk '{print $2}' | awk -F'/' '{print $1}
 
-- lancement la stack
+#### lancement de la stack
 > cd docker-ressources
 > HOST_IP=$(ip -4  a show enp0s8 | grep inet | awk '{print $2}' | awk -F'/' '{print $1}')   docker-compose up -d
-- RDV dans le navigateur de votre machine, taper http://**<votre_ip_machine>**:**8080** pour finaliser le test
+#### RDV dans le navigateur de votre machine, taper http://**<votre_ip_machine>**:**8080** pour finaliser le test
 
 
 ### Déploiement sur K8S
-- On créé les répertoires devant servir de volumes et on set les droits. Pour des besoins de faciliter, on va attribuer tous les droits sur ces foldes
+#### On créé les répertoires devant servir de volumes et on set les droits. Pour des besoins de faciliter, on va attribuer tous les droits sur ces foldes
 > sudo mkdir -p /data_k8s/lib-odoo /data_k8s/pgadmin4 /data_k8s/postgres /data_k8s/addons /data_k8s/config
 > sudo chmod 777 -R  /data_k8s/lib-odoo /data_k8s/pgadmin4 /data_k8s/postgres /data_k8s/addons /data_k8s/config
-- Aller dans le dossier manifestes-k8s et lancer les manifestes
+#### Aller dans le dossier manifestes-k8s et lancer les manifestes
 > cd ../manifestes-k8s
 > kubectl apply -f ic-webapp/
 > kubectl apply -f postgres/
 > kubectl apply -f odoo/
 > kubectl apply -f pg-admin/
-- RDV dans le navigateur de votre machine, taper http://**<votre_ip_machine>**:**30080** pour finaliser le test
+#### RDV dans le navigateur de votre machine, taper http://**<votre_ip_machine>**:**30080** pour finaliser le test
 
 
 
@@ -83,7 +83,7 @@ Les caractéristiques de notre job Pipeline sont les suivantes :
 
 
 ## Partie III : CD avec Jenkins et Ansible
-- Installation de Ansible sur le servuer Minikube
+#### Installation de Ansible sur le servuer Minikube
 > yum -y install epel-release
 > yum install -y python3
 > curl -sS https://bootstrap.pypa.io/pip/3.6/get-pip.py | sudo python3

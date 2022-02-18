@@ -1,25 +1,37 @@
+# Etapes à suivre
+Ce petit tuto explique progressivement  comment mettre en oeuvre le prpojet fil rouge
 
-##Prérequis
+## Prérequis
 
 - Avoir **Virtualbox** et **Vagrant** sur son poste de travail afin de provisionner le lab en local
 
-## Etapes à suivre
+## Partie I : Build, test (**docker**) et déploiement l'application (**kubernetes**)
+
 ### Build, test et push de l'image Docker
+Mes variables utilisées : 
+APP_EXPOSED_PORT = **8000**
+IMAGE_NAME = **ic-webapp**
+IMAGE_TAG = **v1.0**
+DOCKERHUB_ID = **hoco1992**
+DOCKERFILE_NAME = **Dockerfile_v1.0**
+
 - Creation d'un répertoire de travail
 - Téléchargement du vagrantfile et ses dépendances dans le répertoire de travail
 - Ouvrir un terminal dans ce répertoire de travail et déployer Minikube dans virtualbox
 - Une fois minikube OK, télécharger les sources dans la VM minikube (cette VM contient déja docker installé)
-- Lancer le build de l'image et tester le fonctionnemet du conteneur :
-> docker build --no-cache -t ic-webapp:v1.0 .
->docker run -d --name test-ic-webapp -p 8000:8080 ic-webapp:v1.0
-- RDV dans le navigateur de votre machine, taper http://**<votre_ip_machine>**:**8000** pour finaliser le test
+> git clone https://github.com/choco1992/ic-webapp.git
+> cd ic-webapp
+- Lancer le build de l'image et tester le fonctionnement du conteneur :
+> docker build --no-cache -f ./sources/app/${DOCKERFILE_NAME} -t $IMAGE_NAME:$IMAGE_TAG ./sources/app
+>docker run -d --name test-ic-webapp -p ${APP_EXPOSED_PORT}:8080 ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG
+- RDV dans le navigateur de votre machine, taper http://**<votre_ip_machine>**:**${APP_EXPOSED_PORT}** pour finaliser le test
 - Supprimer le conteneur une fois le test validé et pousser l'image dans dockerhub
 > docker rm -f test-ic-webapp
-> docker tag ic-webapp:v1.0 **<votre_id_docker_hub>**/ic-webapp:v1.0
+> docker tag $IMAGE_NAME:$IMAGE_TAG ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG
 > docker login
-> docker push choco1992/ic-webapp:v1.0
+> docker push ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG
 
-### Automatisation via docker-compose (Bonus)
+### Automatisation via docker-compose **(Bonus)**
 - On créé les répertoires devant servir de volumes et on set les droits. Pour des besoins de faciliter, on va attribuer tous les droits sur ces foldes
 > sudo mkdir -p /data_docker/lib-odoo /data_docker/pgadmin4 /data_docker/postgres /data_docker/addons /data_docker/config
 > sudo chmod 777 -R  /data_docker/lib-odoo /data_docker/pgadmin4 /data_docker/postgres /data_docker/addons /data_docker/config 
@@ -56,7 +68,21 @@ Du coup la variable d'en HOST_IP doit contenir cette IP machine. Sur notre infra
 
 
 
-## Partie II
+## Partie II : CI avec Jenkins
+Les caractéristiques de notre job Pipeline sont les suivantes : 
+
+|                   |Type              |Default Value    |Description                   |
+|-------------------|------------------|-----------------|------------------------------|
+|snyk-token         | secret text      |      N/A        | token de connexion à snyk    |
+|dockerhub_password | secret text      |      N/A        | Password dockerhub           |
+|IMAGE_TAG          | Paramètre du job |      v1.0       | tag de l'image docker        |
+|DOCKERFILE_NAME    | Paramètre du job | Dockerfile_v1.0 | Dockerfile à utiliser        |
+|HOST_IP            | Paramètre du job |   127.0.0.1     | adresse IP de la machine hote|
+|APP_EXPOSED_PORT   | Paramètre du job |      8000       | adresse IP de la machine hote|
+ 
+
+
+## Partie III : CD avec Jenkins et Ansible
 - Installation de Ansible sur le servuer Minikube
 > yum -y install epel-release
 > yum install -y python3

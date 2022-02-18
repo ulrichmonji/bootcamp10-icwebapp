@@ -17,14 +17,7 @@ pipeline {
               }
            }
        }
-
-
-        stage('Scan Image with  SNYK') {
-            /*agent { docker { 
-                        image 'franela/dind' 
-                        args '-v /var/run/docker.sock:/var/run/docker.sock'
-                    } 
-            }*/
+       stage('Scan Image with  SNYK') {
             agent any
             environment{
                 SNYK_TOKEN = credentials('snyk_token')
@@ -33,11 +26,9 @@ pipeline {
                 script{
                     sh '''
                     echo "Starting Image scan ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG ..." 
-                    '''
-                    sh 'SCAN_RESULT=$(docker run --rm -e SNYK_TOKEN=$SNYK_TOKEN -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/app snyk/snyk:docker snyk test --docker $DOCKERHUB_ID/$IMAGE_NAME:$IMAGE_TAG --json ||  if [[ $? -gt "1" ]];then echo -e "Warning, you must see scan result \n" ;  false; elif [[ $? -eq "0" ]]; then   echo "PASS : Nothing to Do"; elif [[ $? -eq "1" ]]; then   echo "Warning, passing with something to do";  else false; fi)'
-                    sh 'echo There is Scan result : '
-                    sh 'echo $SCAN_RESULT'
-                    sh ''' echo "Scan ended"
+                    echo There is Scan result : 
+                    SCAN_RESULT=$(docker run --rm -e SNYK_TOKEN=$SNYK_TOKEN -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/app snyk/snyk:docker snyk test --docker $DOCKERHUB_ID/$IMAGE_NAME:$IMAGE_TAG --json ||  if [[ $? -gt "1" ]];then echo -e "Warning, you must see scan result \n" ;  false; elif [[ $? -eq "0" ]]; then   echo "PASS : Nothing to Do"; elif [[ $? -eq "1" ]]; then   echo "Warning, passing with something to do";  else false; fi)
+                    echo "Scan ended"
                     '''
                 }
             }
@@ -77,7 +68,7 @@ pipeline {
           }
         }
 
-        stage ('Login and Push Image on docker hub') {
+       stage ('Login and Push Image on docker hub') {
           agent any
           steps {
              script {
@@ -90,5 +81,4 @@ pipeline {
         }
 
     }
-
 }

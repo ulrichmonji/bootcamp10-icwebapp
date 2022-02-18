@@ -2,10 +2,8 @@ pipeline {
     environment {
         IMAGE_NAME = "ic-webapp"
         APP_CONTAINER_PORT = "8080"
-        IMAGE_TAG = "v1.0"
         DOCKERHUB_ID = "choco1992"
         DOCKERHUB_PASSWORD = credentials('dockerhub_password')
-        DOCKERFILE_NAME = "Dockerfile_v1.0"
         ANSIBLE_IMAGE_AGENT = "registry.gitlab.com/robconnolly/docker-ansible:latest"
     }
     agent none
@@ -28,7 +26,7 @@ pipeline {
             }
             steps {
                 script{
-                    sh '''#!/bin/bash
+                    sh '''
                     apk --no-cache add npm
                     npm install -g snyk-to-html
                     echo "Starting scan..."

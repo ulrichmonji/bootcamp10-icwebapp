@@ -84,16 +84,18 @@ Du coup la variable d'en HOST_IP doit contenir cette IP machine. Sur notre infra
 ## Partie II : CI avec Jenkins
 
 #### Lancer le Jenkins
-#### Récupération du token pour L'IHM
+#### Récupération du token pour L'IHM et creation de votre compte
 Taper la commande suivante sur la VM Jenkins
 > docker exec -it jenkins_jenkins_1 cat /var/jenkins_home/secrets/initialAdminPassword
+Une fois le token récupérer, se connecter a l'IHM Jenkins sur le port 8080 et insérer le token
 
 #### Plugins Jenkins à Installer
 - Docker
 - Docker Pipeline
+- docker-build-step
 
 #### Caractéristiques du job Pipeline 
-
+- Secret et paramètres
 |                   |Type              |Default Value    |Description                   |
 |-------------------|------------------|-----------------|------------------------------|
 |    snyk_token     | secret text      |      N/A        | token de connexion à snyk    |
@@ -102,7 +104,14 @@ Taper la commande suivante sur la VM Jenkins
 |  DOCKERFILE_NAME  | Paramètre du job | Dockerfile_v1.0 | Dockerfile à utiliser        |
 |      HOST_IP      | Paramètre du job |   127.0.0.1     | adresse IP de la machine hote|
 |  APP_EXPOSED_PORT | Paramètre du job |      8000       | Port expose de l'appli       |
- 
+
+- Trigger  :  Scrutation de l'outil (**\* \* \* \* \***) ou webhook (A configurer dans Github)
+
+Pipelne : 
+    - Definition : Pipeline script from SCM > GIT
+        - Branche : */main
+        - Script Path : Jenkinsfile
+
 
 
 

@@ -25,7 +25,7 @@ pipeline {
                         args '-v /var/run/docker.sock:/var/run/docker.sock'
                     } 
             }*/
-            
+            agent any
             environment{
                 SNYK_TOKEN = credentials('snyk_token')
             }
@@ -49,7 +49,7 @@ pipeline {
                         args '-v /var/run/docker.sock:/var/run/docker.sock'
                     } 
             }*/
-            
+            agent any
             environment{
                 SNYK_TOKEN = credentials('snyk_token')
             }

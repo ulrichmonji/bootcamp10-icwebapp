@@ -19,7 +19,7 @@ pipeline {
        }
 
 
-        stage('Scan Dockerfile $DOCKERFILE_NAME with  SNYK') {
+        stage('Scan Image with  SNYK') {
             /*agent { docker { 
                         image 'franela/dind' 
                         args '-v /var/run/docker.sock:/var/run/docker.sock'
@@ -32,42 +32,16 @@ pipeline {
             steps {
                 script{
                     sh '''
-                    echo "Starting scan of Dockerfile ${DOCKERFILE_NAME} ..." 
+                    echo "Starting Image scan ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG ..." 
                     '''
-                    sh 'docker run --rm -e SNYK_TOKEN=$SNYK_TOKEN -v /var/run/docker.sock:/var/run/docker.sock -v ${WORKSPACE}:/app snyk/snyk:docker snyk test --docker $DOCKERHUB_ID/$IMAGE_NAME:$IMAGE_TAG --file=/app/sources/app/${DOCKERFILE_NAME} --json > resultats_${DOCKERFILE_NAME}.json ||  if [[ $? -gt "1" ]];then echo "PASS"; else false; fi '
-                    sh 'echo "$(grep message resultats_${DOCKERFILE_NAME}.json)"'
+                    sh 'docker run --rm -e SNYK_TOKEN=$SNYK_TOKEN -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/app snyk/snyk:docker snyk test --docker $DOCKERHUB_ID/$IMAGE_NAME:$IMAGE_TAG --json > resultats_${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG.json ||  if [[ $? -gt "1" ]];then echo "PASS"; else false; fi '
+                    sh 'echo "$(grep message resultats_${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG.json)"'
 /*                    sh 'snyk-to-html -i resultats_${DOCKERFILE_NAME}.json -o resultats_${DOCKERFILE_NAME}.html'  */
                     sh ''' echo "Scan ended"'
                     '''
                 }
             }
         }
-
-        stage('Scan builded image ${DOCKERHUB_ID}/${IMAGE_NAME}:${IMAGE_TAG} with  SNYK') {
-            /*agent { docker { 
-                        image 'franela/dind' 
-                        args '-v /var/run/docker.sock:/var/run/docker.sock'
-                    } 
-            }*/
-            agent any
-            environment{
-                SNYK_TOKEN = credentials('snyk_token')
-            }
-            steps {
-                script{
-                    sh '''
-#                   apk --no-cache add npm
-#                    npm install -g snyk-to-html
-                    echo "Starting scan of Builded image  ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG..."
-                    docker run --rm -e SNYK_TOKEN=${SNYK_TOKEN} -v /var/run/docker.sock:/var/run/docker.sock -v ${WORKSPACE}:/app snyk/snyk:docker snyk test --docker $DOCKERHUB_ID/$IMAGE_NAME:$IMAGE_TAG --json > resultats_${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG.json ||  if [[ $? -gt "1" ]];then echo "PASS"; else false; fi 
-                    echo `grep 'message' resultats_${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG.json`
-#                   snyk-to-html -i resultats_${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG.json -o resultats_${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG.html
-                    echo "Scan ended"
-                    '''
-                }
-            }
-        }
-
        stage('Run container based on builded image') {
           agent any
           steps {

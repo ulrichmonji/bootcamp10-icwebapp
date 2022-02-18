@@ -19,7 +19,11 @@ pipeline {
        }
 
         stage('Scan image with  SNYK') {
-            agent { docker { image 'franela/dind' } }
+            agent { docker { 
+                        image 'franela/dind' 
+                        args '-v /var/run/docker.sock:/var/run/docker.sock'
+                    } 
+            }
             
             environment{
                 SNYK_TOKEN = credentials('snyk_token')

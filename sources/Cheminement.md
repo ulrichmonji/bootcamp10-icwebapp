@@ -8,16 +8,28 @@ Ce petit tuto explique progressivement  comment mettre en oeuvre le prpojet fil 
 ## Partie I : Build, test (**docker**) et déploiement l'application (**kubernetes**)
 
 ### Build, test et push de l'image Docker
-- Mes variables utilisées : 
-- APP_EXPOSED_PORT = **8000**
-- IMAGE_NAME = **ic-webapp**
-- IMAGE_TAG = **v1.0**
-- DOCKERHUB_ID = **choco1992**
-- DOCKERFILE_NAME = **Dockerfile_v1.0**
+#### Variables utilisées dans la documentation : *à adapter à votre cas*
+- APP_EXPOSED_PORT : **8000**
+- IMAGE_NAME : **ic-webapp**
+- IMAGE_TAG : **v1.0**
+- DOCKERHUB_ID : **choco1992**
+- DOCKERFILE_NAME : **Dockerfile_v1.0**
 
 #### Creation d'un répertoire de travail
+Sur votre poste de travail, créer un répertoire de travail et déplacer vous dans ce répertoire.
+Donnez lui le nom qui vous plait (** Projet fil rouge ** par exemple)
+
 #### Téléchargement du vagrantfile et ses dépendances dans le répertoire de travail
-#### Ouvrir un terminal dans ce répertoire de travail et déployer Minikube dans virtualbox
+Les vagrantfiles Eazytraining se trouvent [ici](https://github.com/diranetafen/cursus-devops/tree/master/vagrant)
+J'ai utilisé [celui ci](https://github.com/diranetafen/cursus-devops/tree/master/vagrant/minikube)
+
+#### Ouvrir un terminal (Powershell) dans ce répertoire de travail et déployer Minikube dans virtualbox
+- Shift + click droit sur le répertoire
+- Ouvrir un terminal Powershell ici
+- Lancer le déploiement avec **vagrant up --provision**
+- Une fois le déploiement terminé, se connecter avec **vagrant ssh**
+- Lancer Minikube avec **minikube start --driver=none**
+
 #### Une fois minikube OK, télécharger les sources dans la VM minikube (cette VM contient déja docker installé)
 > git clone https://github.com/choco1992/ic-webapp.git
 > cd ic-webapp

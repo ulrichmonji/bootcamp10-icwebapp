@@ -96,7 +96,7 @@ Une fois le token récupérer, se connecter a l'IHM Jenkins sur le port 8080 et 
 - docker-build-step
 
 #### Caractéristiques du job Pipeline 
-- Secret et paramètres
+##### Secret et paramètres
 |                   |Type              |Default Value    |Description                   |
 |-------------------|------------------|-----------------|------------------------------|
 |    snyk_token     | secret text      |      N/A        | token de connexion à snyk    |
@@ -106,7 +106,7 @@ Une fois le token récupérer, se connecter a l'IHM Jenkins sur le port 8080 et 
 |      HOST_IP      | Paramètre du job |   127.0.0.1     | adresse IP de la machine hote|
 |  APP_EXPOSED_PORT | Paramètre du job |      8000       | Port expose de l'appli       |
 
-- Trigger  :  Scrutation de l'outil (**\* \* \* \* \***) ou webhook (A configurer dans Github)
+##### Trigger  :  Scrutation de l'outil (**\* \* \* \* \***) ou webhook (A configurer dans Github)
 
 Pipelne : 
     - Definition : Pipeline script from SCM > GIT

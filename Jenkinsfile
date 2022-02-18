@@ -36,7 +36,7 @@ pipeline {
                     '''
                     sh 'docker run --rm -e SNYK_TOKEN=$SNYK_TOKEN -v /var/run/docker.sock:/var/run/docker.sock -v ${WORKSPACE}:/app snyk/snyk:docker snyk test --docker $DOCKERHUB_ID/$IMAGE_NAME:$IMAGE_TAG --file=/app/sources/app/${DOCKERFILE_NAME} --json > resultats_${DOCKERFILE_NAME}.json ||  if [[ $? -gt "1" ]];then echo "PASS"; else false; fi '
                     sh 'echo "$(grep message resultats_${DOCKERFILE_NAME}.json)"'
-#                    sh 'snyk-to-html -i resultats_${DOCKERFILE_NAME}.json -o resultats_${DOCKERFILE_NAME}.html'
+/*                    sh 'snyk-to-html -i resultats_${DOCKERFILE_NAME}.json -o resultats_${DOCKERFILE_NAME}.html'  */
                     sh ''' echo "Scan ended"'
                     '''
                 }

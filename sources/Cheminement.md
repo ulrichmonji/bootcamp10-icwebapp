@@ -88,6 +88,7 @@ Ici, le Jenkinsfile est celui du [tag v1.0](https://github.com/choco1992/ic-weba
 #### Récupération du token pour L'IHM et creation de votre compte
 Taper la commande suivante sur la VM Jenkins
 > docker exec -it jenkins_jenkins_1 cat /var/jenkins_home/secrets/initialAdminPassword
+
 Une fois le token récupérer, se connecter a l'IHM Jenkins sur le port 8080 et insérer le token
 
 #### Plugins Jenkins à Installer

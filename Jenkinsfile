@@ -24,7 +24,7 @@ pipeline {
             agent { docker { image 'franela/dind' } }
             
             environment{
-                SNYK_TOKEN = credentials('snyk-token')
+                SNYK_TOKEN = credentials('snyk_token')
             }
             steps {
                 script{

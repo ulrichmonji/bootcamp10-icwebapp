@@ -17,11 +17,12 @@ Ce petit tuto explique progressivement  comment mettre en oeuvre le prpojet fil 
 
 #### Creation d'un répertoire de travail
 Sur votre poste de travail, créer un répertoire de travail et déplacer vous dans ce répertoire.
-Donnez lui le nom qui vous plait (** Projet fil rouge ** par exemple)
+Donnez lui le nom qui vous plait (**Projet fil rouge** par exemple)
 
 #### Téléchargement du vagrantfile et ses dépendances dans le répertoire de travail
 Les vagrantfiles Eazytraining se trouvent [ici](https://github.com/diranetafen/cursus-devops/tree/master/vagrant)
-J'ai utilisé [celui ci](https://github.com/diranetafen/cursus-devops/tree/master/vagrant/minikube)
+
+Prendre [celui ci](https://github.com/diranetafen/cursus-devops/tree/master/vagrant/minikube) de préférence
 
 #### Ouvrir un terminal (Powershell) dans ce répertoire de travail et déployer Minikube dans virtualbox
 - Shift + click droit sur le répertoire
@@ -81,17 +82,28 @@ Du coup la variable d'en HOST_IP doit contenir cette IP machine. Sur notre infra
 
 
 ## Partie II : CI avec Jenkins
-Les caractéristiques de notre job Pipeline sont les suivantes : 
+
+#### Lancer le Jenkins
+#### Récupération du token pour L'IHM
+Taper la commande suivante sur la VM Jenkins
+> docker exec -it jenkins_jenkins_1 cat /var/jenkins_home/secrets/initialAdminPassword
+
+#### Plugins Jenkins à Installer
+- Docker
+- Docker Pipeline
+
+#### Caractéristiques du job Pipeline 
 
 |                   |Type              |Default Value    |Description                   |
 |-------------------|------------------|-----------------|------------------------------|
-|snyk-token         | secret text      |      N/A        | token de connexion à snyk    |
-|dockerhub_password | secret text      |      N/A        | Password dockerhub           |
-|IMAGE_TAG          | Paramètre du job |      v1.0       | tag de l'image docker        |
-|DOCKERFILE_NAME    | Paramètre du job | Dockerfile_v1.0 | Dockerfile à utiliser        |
-|HOST_IP            | Paramètre du job |   127.0.0.1     | adresse IP de la machine hote|
-|APP_EXPOSED_PORT   | Paramètre du job |      8000       | Port expose de l'appli       |
+|    snyk_token     | secret text      |      N/A        | token de connexion à snyk    |
+| dockerhub_password| secret text      |      N/A        | Password dockerhub           |
+|    IMAGE_TAG      | Paramètre du job |      v1.0       | tag de l'image docker        |
+|  DOCKERFILE_NAME  | Paramètre du job | Dockerfile_v1.0 | Dockerfile à utiliser        |
+|      HOST_IP      | Paramètre du job |   127.0.0.1     | adresse IP de la machine hote|
+|  APP_EXPOSED_PORT | Paramètre du job |      8000       | Port expose de l'appli       |
  
+
 
 
 ## Partie III : CD avec Jenkins et Ansible

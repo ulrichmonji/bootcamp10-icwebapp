@@ -114,8 +114,10 @@ pipeline {
             stage ("Ping  targeted hosts") {
                 steps {
                     script {
-                        sh 'export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg'
-                        sh 'ansible all -m ping --private-key \${WORKSPACE}/id_rsa'
+                        sh ''' 
+                            export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
+                            ansible all -m ping --private-key \${WORKSPACE}/id_rsa 
+                        '''
                     }
                 }
             }

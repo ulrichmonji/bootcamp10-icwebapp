@@ -118,9 +118,22 @@ Pipelne :
 
 
 ## Partie III : CD avec Jenkins et Ansible
-#### Installation de Ansible sur le servuer Minikube
+## Test Unitaires des playbook ansible
 > yum -y install epel-release
 > yum install -y python3
 > curl -sS https://bootstrap.pypa.io/pip/3.6/get-pip.py | sudo python3
 > /usr/local/bin/pip3 install ansible
 > sudo yum install -y sshpass
+
+## Configuration du Jenkinsfile pour intégrer le déploiement Ansible
+##### Secret et paramètres
+En plus des paramètres et tokens utilisé à la partie CI, on aura aussi besoin des paramètres suivants : 
+
+|                   |Type              |Default Value    |Description                   |
+|-------------------|------------------|-----------------|------------------------------|
+|     vault_key     | secret text      |      N/A        | Mot de pass vault ansible    |
+|    private_key    | secret text      |      N/A        | Clés privé ssh du user       |
+
+##### Shared Library
+Le pipeline utilise une librairie partagée nommée [ulrich-shared-library](https://github.com/ulrichmonji/sharedLibrary.git).
+

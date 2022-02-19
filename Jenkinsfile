@@ -119,18 +119,18 @@ pipeline {
                 }
             }
 
-            stage ("Check playbook syntax") {
+            stage ("Check all playbook syntax") {
                 steps {
                     script {
                         sh '''
-                            echo ansible-lint -x 306 sources/playbooks/install-docker.yml
+                            ansible-lint sources/ansible-ressources/playbooks/*
                             echo ${GIT_BRANCH}
                                                 
                         '''
                     }
                 }
             }
-            
+
             stage ("Deploy in PRODUCTION") {
                 when { expression { GIT_BRANCH == 'origin/main'} }                
                 stages {

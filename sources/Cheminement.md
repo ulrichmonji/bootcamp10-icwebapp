@@ -133,6 +133,7 @@ En plus des paramètres et tokens utilisé à la partie CI, on aura aussi besoin
 |-------------------|------------------|-----------------|------------------------------|
 |     vault_key     | secret text      |      N/A        | Mot de pass vault ansible    |
 |    private_key    | secret text      |      N/A        | Clés privé ssh du user       |
+|       slack       | secret text      |      N/A        | Token channel slack          |
 
 ##### Shared Library
 Le pipeline utilise une librairie partagée nommée [ulrich-shared-library](https://github.com/ulrichmonji/sharedLibrary.git).

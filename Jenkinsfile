@@ -91,9 +91,10 @@ pipeline {
           }          
           steps {
              script {
+               sh 'echo Debug worskcpace = \${WORKSPACE} '  
                sh '''
-                  echo $VAULT_KEY > vault.key
-                  echo $PRIVATE_KEY > id_rsa
+                  echo $VAULT_KEY > \${WORKSPACE}/vault.key
+                  echo $PRIVATE_KEY > \${WORKSPACE}/id_rsa
                   chmod 600 id_rsa
                '''
              }
@@ -114,6 +115,7 @@ pipeline {
             stage ("Ping  targeted hosts") {
                 steps {
                     script {
+                        sh 'echo Debug worskcpace = \${WORKSPACE} '
                         sh 'ansible all -m ping --private-key \${WORKSPACE}/id_rsa'
                     }
                 }
@@ -124,8 +126,7 @@ pipeline {
                     script {
                         sh '''
                             ansible-lint sources/ansible-ressources/playbooks/*
-                            echo ${GIT_BRANCH}
-                                                
+                            echo ${GIT_BRANCH}                                         
                         '''
                     }
                 }

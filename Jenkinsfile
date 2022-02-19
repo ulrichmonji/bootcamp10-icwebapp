@@ -141,6 +141,7 @@ pipeline {
                                 sh '''
                                     apt update -y
                                     apt install sshpass -y
+                                    export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
                                     cd sources/ansible-ressources && ansible-playbook playbooks/install-docker.yml --vault-password-file \${WORKSPACE}/vault.key --private-key \${WORKSPACE}/id_rsa -l odoo_server,pg_admin_server
                                 '''
                             }
@@ -150,6 +151,7 @@ pipeline {
                     stage ("PRODUCTION - deploy pgadmin") {
                         steps {
                             script {
+                                sh 'export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg'
                                 sh 'cd sources/ansible-ressources && ansible-playbook playbooks/deploy-pgadmin.yml --vault-password-file \${WORKSPACE}/vault.key --private-key \${WORKSPACE}/id_rsa -l pg_admin'
                             }
                         }
@@ -157,6 +159,7 @@ pipeline {
                     stage ("PRODUCTION - deploy odoo") {
                         steps {
                             script {
+                                sh 'export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg'
                                 sh 'cd sources/ansible-ressources && ansible-playbook playbooks/deploy-odoo.yml --vault-password-file \${WORKSPACE}/vault.key --private-key \${WORKSPACE}/id_rsa -l odoo'
                             }
                         }
@@ -165,6 +168,7 @@ pipeline {
                     stage ("PRODUCTION - deploy ic-webapp") {
                         steps {
                             script {
+                                sh 'export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg'
                                 sh 'cd sources/ansible-ressources && ansible-playbook playbooks/deploy-ic-webapp.yml --vault-password-file \${WORKSPACE}/vault.key --private-key \${WORKSPACE}/id_rsa -l ic_webapp'
                             }
                         }

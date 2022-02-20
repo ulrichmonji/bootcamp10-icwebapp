@@ -118,7 +118,7 @@ pipeline {
                             apt update -y
                             apt install sshpass -y 
                             export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                            ansible all -m ping --private-key \${WORKSPACE}/id_rsa 
+                            ansible all -m ping --private-key \${WORKSPACE}/id_rsa  -l prod
                         '''
                     }
                 }

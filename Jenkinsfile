@@ -144,10 +144,10 @@ pipeline {
                             script {
                                 sh '''
                                     export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                                    ansible-playbook install-docker.yml -l odoo_server,pg_admin_server
-                                   '''
+                                    ansible-playbook sources/ansible-ressources/playbooks/install-docker.yml --vault-password-file vault.key --private-key id_rsa -l odoo_server,pg_admin_server
+                                '''
 
-                                /*    cd sources/ansible-ressources && ansible-playbook playbooks/install-docker.yml --vault-password-file vault.key --private-key id_rsa -l odoo_server,pg_admin_server */
+                                
                                 
                             }
                         }

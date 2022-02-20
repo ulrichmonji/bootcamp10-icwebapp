@@ -129,11 +129,14 @@ Pipelne :
 ##### Secret et paramètres
 En plus des paramètres et tokens utilisé à la partie CI, on aura aussi besoin des paramètres suivants : 
 
-|                   |Type              |Default Value    |Description                   |
-|-------------------|------------------|-----------------|------------------------------|
-|     vault_key     | secret text      |      N/A        | Mot de pass vault ansible    |
-|    private_key    | secret text      |      N/A        | Clés privé ssh du user       |
-|       slack       | secret text      |      N/A        | Token channel slack          |
+|                      |Type              |Default Value    |Description                   |
+|----------------------|------------------|-----------------|------------------------------|
+|     vault_key        | secret text      |      N/A        | Mot de pass vault ansible    |
+|    private_key       | secret text      |      N/A        | Clés privé ssh du user       |
+|       slack          | secret text      |      N/A        | Token channel slack          |
+| aws_access_key_id    | secret text      |      N/A        |      access key aws          |
+| aws_secret_access_key| secret text      |      N/A        |      secret key aws          |
+
 
 ##### Shared Library
 Le pipeline utilise une librairie partagée nommée [ulrich-shared-library](https://github.com/ulrichmonji/sharedLibrary.git).

@@ -100,6 +100,26 @@ pipeline {
           }
        }
 
+       stage ('Deploy AWS EC2') {
+          agent { docker { image 'jenkins/jnlp-agent-terraform'  } }
+          environment {
+            AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
+            AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
+          }          
+          steps {
+             script {
+               sh '''
+                  mkdir -p ~/.aws
+                  echo "[default]" >> ~/.aws/credentials
+                  echo $AWS_ACCESS_KEY_ID >> ~/.aws/credentials
+                  echo $AWS_SECRET_ACCESS_KEY >> ~/.aws/credentials
+                  chmod 600 aws_credential
+               '''
+             }
+          }
+       }
+
+
       stage('Deploy application ') {
         agent { docker { image 'registry.gitlab.com/robconnolly/docker-ansible:latest'  } }
         stages {

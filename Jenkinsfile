@@ -118,7 +118,7 @@ pipeline {
                             apt update -y
                             apt install sshpass -y 
                             export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                            ansible all -m ping --private-key \${WORKSPACE}/id_rsa  -l prod
+                            ansible all -m ping --private-key id_rsa  -l prod
                         '''
                     }
                 }
@@ -129,7 +129,7 @@ pipeline {
                     script {
                         sh '''
                             export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                            ansible-lint -x 306 sources/ansible-ressources/playbooks/* || echo passing Lint
+                            ansible-lint -x 306 sources/ansible-ressources/playbooks/* || echo passing linter
                             echo ${GIT_BRANCH}                                         
                         '''
                     }
@@ -139,7 +139,7 @@ pipeline {
             stage ("Deploy in PRODUCTION") {
                 when { expression { GIT_BRANCH == 'origin/main'} }                
                 stages {
-                    stage ("PRODUCTION - Install Docker all target hosts") {
+                    stage ("PRODUCTION - Install Docker on all hosts") {
                         steps {
                             script {
                                 sh '''
@@ -153,7 +153,7 @@ pipeline {
                         }
                     }
 
-                    stage ("PRODUCTION - deploy pgadmin") {
+                    stage ("PRODUCTION - Deploy pgadmin") {
                         steps {
                             script {
                                 sh '''
@@ -163,7 +163,7 @@ pipeline {
                             }
                         }
                     }
-                    stage ("PRODUCTION - deploy odoo") {
+                    stage ("PRODUCTION - Deploy odoo") {
                         steps {
                             script {
                                 sh '''
@@ -174,7 +174,7 @@ pipeline {
                         }
                     }
 
-                    stage ("PRODUCTION - deploy ic-webapp") {
+                    stage ("PRODUCTION - Deploy ic-webapp") {
                         steps {
                             script {
                                 sh '''

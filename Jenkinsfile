@@ -143,11 +143,12 @@ pipeline {
                         steps {
                             script {
                                 sh '''
-                                    apt update -y
-                                    apt install sshpass -y
                                     export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                                    cd sources/ansible-ressources && ansible-playbook playbooks/install-docker.yml --vault-password-file \${WORKSPACE}/vault.key --private-key \${WORKSPACE}/id_rsa -l odoo_server,pg_admin_server
-                                '''
+                                    ansible-playbook install-docker.yml -l odoo_server,pg_admin_server
+                                   '''
+
+                                /*    cd sources/ansible-ressources && ansible-playbook playbooks/install-docker.yml --vault-password-file vault.key --private-key id_rsa -l odoo_server,pg_admin_server */
+                                
                             }
                         }
                     }

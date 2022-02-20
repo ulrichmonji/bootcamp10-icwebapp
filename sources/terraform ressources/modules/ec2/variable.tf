@@ -30,5 +30,5 @@ variable "AZ" {
 
 variable "user" {
   type    = string
-  default = "ubuntu"
+  default = "ec2-user"
 }

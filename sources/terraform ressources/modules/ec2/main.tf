@@ -1,15 +1,5 @@
-data "aws_ami" "my_ubuntu_ami" {
-  most_recent = true
-  owners      = ["099720109477"]
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
-  }
-}
-
-resource "aws_instance" "mini-projet-ec2" {
-  ami               = data.aws_ami.my_ubuntu_ami.id
+resource "aws_instance" "ic-webapp-ec2" {
+  ami               = "ami-0ff8a91507f77f867"
   instance_type     = var.instance_type
   key_name          = var.ssh_key
   availability_zone = var.AZ
@@ -23,20 +13,21 @@ resource "aws_instance" "mini-projet-ec2" {
   }
 
   provisioner "local-exec" {
-    command = "echo PUBLIC IP: ${var.public_ip} >> IP_ec2.txt"
+    command = "echo ansible_host: ${var.public_ip} >> $(pwd)/sources/ansible-ressources/host_vars/pg_admin_server_dev.yml"
   }
 
   provisioner "remote-exec" {
     inline = [
       "sudo apt update -y",
-      "sudo apt install -y nginx",
-      "sudo systemctl start nginx",
-      "sudo systemctl enable nginx"
+      "sudo amazon-linux-extras install docker",
+      "sudo service docker start",
+      "sudo systemctl enable docker",
+      "sudo usermod -a -G docker ec2-user"
     ]
     connection {
       type        = "ssh"
       user        = var.user
-      private_key = file("C:/Users/monji/Desktop/${var.ssh_key}.pem")
+      private_key = file("./${var.ssh_key}.pem")
       host        = self.public_ip
     }
   }

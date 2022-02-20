@@ -83,18 +83,21 @@ pipeline {
           }
        }
 
-       stage ('Prepare ansible environment') {
+       stage ('Prepare Ansible and Terraform environment') {
           agent any
           environment {
             VAULT_KEY = credentials('vault_key')
             PRIVATE_KEY = credentials('private_key')
+            PRIVATE_AWS_KEY = credentials('private_aws_key')
           }          
           steps {
              script {
                sh '''
                   echo $VAULT_KEY > vault.key
                   echo $PRIVATE_KEY > id_rsa
+                  echo $PRIVATE_AWS_KEY > devops.pem
                   chmod 600 id_rsa
+                  chmod 600 devops.pem
                '''
              }
           }

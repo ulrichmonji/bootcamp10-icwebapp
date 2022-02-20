@@ -18,6 +18,11 @@ variable "sg_name" {
   default = "NULL"
 }
 
+variable "server_name" {
+  type    = string
+  default = "NULL"
+}
+
 variable "public_ip" {
   type    = string
   default = "NULL"

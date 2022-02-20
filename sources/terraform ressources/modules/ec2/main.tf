@@ -13,7 +13,7 @@ resource "aws_instance" "ic-webapp-ec2" {
   }
 
   provisioner "local-exec" {
-    command = "echo ansible_host: ${var.public_ip} >> $(pwd)/sources/ansible-ressources/host_vars/pg_admin_server_dev.yml"
+    command = "echo ansible_host: ${var.public_ip} >> $(pwd)/sources/ansible-ressources/host_vars/${var.server_name}.yml && echo ansible_host: ${var.public_ip} >> $(pwd)/sources/ansible-ressources/host_vars/odoo_server_dev.yml" && echo ansible_host: ${var.public_ip} >> $(pwd)/sources/ansible-ressources/host_vars/pg_admin_server_dev.yml"
   }
 
   provisioner "remote-exec" {

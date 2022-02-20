@@ -117,6 +117,11 @@ pipeline {
                   echo $AWS_ACCESS_KEY_ID >> ~/.aws/credentials
                   echo $AWS_SECRET_ACCESS_KEY >> ~/.aws/credentials
                   chmod 600 aws_credential
+                  cd ./sources/terraform ressources/app
+                  terraform init
+                  terraform plan
+                  terraform apply --auto-approve
+
                '''
              }
           }
@@ -152,8 +157,7 @@ pipeline {
                     script {
                         sh '''
                             export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                            ansible-lint -x 306 sources/ansible-ressources/playbooks/* || echo passing linter
-                            echo ${GIT_BRANCH}                                         
+                            ansible-lint -x 306 sources/ansible-ressources/playbooks/* || echo passing linter                                     
                         '''
                     }
                 }

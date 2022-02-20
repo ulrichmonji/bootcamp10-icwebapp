@@ -4,5 +4,16 @@
 ~*
 # répertoire partargé avec les VMs
 shared
-# fichiers sauvegardé
-*.save
+
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+*/.terraform.lock.hcl
+
+# Crash log files
+crash.log
+crash.*.log
+

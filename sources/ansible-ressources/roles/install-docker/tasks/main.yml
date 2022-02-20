@@ -12,8 +12,8 @@
 
 - name: Install pre-requisite packages
   yum:
-    name: "{{item}}"
-    state: latest
+    name: "{{ item }}"
+    state: present
   loop:
     - yum-utils
     - device-mapper-persistent-data
@@ -26,6 +26,7 @@
     dest: /tmp/get-pip.py
 - name: install python-pip
   command: python3 /tmp/get-pip.py
+  ignore_errors: yes
 - name: Install docker python
   pip:
     name: docker-py
@@ -38,7 +39,7 @@
 - name: Install Docker
   yum: 
     name: docker 
-    state: latest
+    state: present
 
 - name: Start and enable the Docker daemon
   service: 

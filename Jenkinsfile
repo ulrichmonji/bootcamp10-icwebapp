@@ -156,16 +156,20 @@ pipeline {
                     stage ("PRODUCTION - deploy pgadmin") {
                         steps {
                             script {
-                                sh 'export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg'
-                                sh 'cd sources/ansible-ressources && ansible-playbook playbooks/deploy-pgadmin.yml --vault-password-file \${WORKSPACE}/vault.key --private-key \${WORKSPACE}/id_rsa -l pg_admin'
+                                sh '''
+                                    export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg'
+                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-pgadmin.yml --vault-password-file vault.key --private-key id_rsa -l pg_admin
+                                '''
                             }
                         }
                     }
                     stage ("PRODUCTION - deploy odoo") {
                         steps {
                             script {
-                                sh 'export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg'
-                                sh 'cd sources/ansible-ressources && ansible-playbook playbooks/deploy-odoo.yml --vault-password-file \${WORKSPACE}/vault.key --private-key \${WORKSPACE}/id_rsa -l odoo'
+                                sh '''
+                                    export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
+                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-odoo.yml --vault-password-file vault.key --private-key id_rsa -l odoo
+                                '''
                             }
                         }
                     }
@@ -173,8 +177,10 @@ pipeline {
                     stage ("PRODUCTION - deploy ic-webapp") {
                         steps {
                             script {
-                                sh 'export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg'
-                                sh 'cd sources/ansible-ressources && ansible-playbook playbooks/deploy-ic-webapp.yml --vault-password-file \${WORKSPACE}/vault.key --private-key \${WORKSPACE}/id_rsa -l ic_webapp'
+                                sh '''
+                                    export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
+                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key --private-key id_rsa -l ic_webapp
+                                '''
                             }
                         }
                     }

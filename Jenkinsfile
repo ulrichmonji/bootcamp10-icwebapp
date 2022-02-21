@@ -11,7 +11,7 @@ pipeline {
     }
     agent none
     stages {
-       stage('Build image') {
+       /*stage('Build image') {
            agent any
            steps {
               script {
@@ -19,7 +19,7 @@ pipeline {
 
               }
            }
-       }
+       }*/
        /*stage('Scan Image with  SNYK') {
             agent any
             environment{
@@ -36,7 +36,7 @@ pipeline {
                 }
             }
        }*/
-       stage('Run container based on builded image') {
+       /*stage('Run container based on builded image') {
           agent any
           steps {
             script {
@@ -48,7 +48,7 @@ pipeline {
               '''
              }
           }
-       }
+       }*/
        stage('Test image') {
            agent any
            steps {
@@ -71,7 +71,7 @@ pipeline {
           }
        }
 
-       stage ('Login and Push Image on docker hub') {
+       /*stage ('Login and Push Image on docker hub') {
           agent any
           steps {
              script {
@@ -81,7 +81,7 @@ pipeline {
                '''
              }
           }
-       }
+       }*/
 
        stage ('Prepare Ansible and Terraform environment') {
           agent any

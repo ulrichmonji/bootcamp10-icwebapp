@@ -120,7 +120,7 @@ pipeline {
                   echo $AWS_ACCESS_KEY_ID >> ~/.aws/credentials
                   echo $AWS_SECRET_ACCESS_KEY >> ~/.aws/credentials
                   chmod 600 ~/.aws/credentials
-                  cd ./sources/terraform ressources/app
+                  cd "./sources/terraform ressources/app"
                   terraform init
                   terraform plan
                   terraform apply --auto-approve

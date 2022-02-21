@@ -170,14 +170,15 @@ pipeline {
             }
 
             stage ("Deploy in PRODUCTION") {
-                when { expression { GIT_BRANCH == 'origin/main'} }                
+                when { expression { GIT_BRANCH == 'origin/main'} }   
+                timeout(time: 1, unit: "MINUTES") {
+                    input message: "Confirmer la creation de ressources dans AWS ?", ok: 'Yes'
+                }                             
                 stages {
                     stage ("PRODUCTION - Install Docker on all hosts") {
                         steps {
                             script {
-                                timeout(time: 1, unit: "MINUTES") {
-                                    input message: "Confirmer la creation de ressources dans AWS ?", ok: 'Yes'
-                                }
+
                                 sh '''
                                     cd "./sources/terraform ressources/app"
                                     terraform destroy --auto-approve 

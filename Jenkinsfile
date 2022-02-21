@@ -170,19 +170,21 @@ pipeline {
             }
 
             stage ("Deploy in PRODUCTION") {
-                when { expression { GIT_BRANCH == 'origin/main'} }   
-                steps {
-                    script {       
-                        timeout(time: 1, unit: "MINUTES") {
-                            input message: "Confirmer vous la suppression de ressources dans AWS ?", ok: 'Yes'
-                        } 
-                        sh'''
-                            cd "./sources/terraform ressources/app"
-                            terraform destroy --auto-approve
-                        '''                            
-                    }
-                }                        
+                when { expression { GIT_BRANCH == 'origin/main'} }                     
                 stages {
+                    stage ("Delete Dev environment") {
+                        steps {
+                            script {       
+                                timeout(time: 1, unit: "MINUTES") {
+                                    input message: "Confirmer vous la suppression de ressources dans AWS ?", ok: 'Yes'
+                                } 
+                                sh'''
+                                    cd "./sources/terraform ressources/app"
+                                    terraform destroy --auto-approve
+                                '''                            
+                            }
+                        }
+                    }                                         
                     stage ("PRODUCTION - Install Docker on all hosts") {
                         steps {
                             script {

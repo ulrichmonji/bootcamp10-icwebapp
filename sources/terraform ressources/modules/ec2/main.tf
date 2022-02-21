@@ -13,8 +13,7 @@ resource "aws_instance" "ic-webapp-ec2" {
   }
 
   provisioner "local-exec" {
-  //  command = "echo ansible_host: ${var.public_ip} >> ./sources/ansible-ressources/host_vars/${var.server_name}.yml" 
-    command = "echo working_dir =  $PWD" 
+    command = "echo ansible_host: ${var.public_ip} >> ../../ansible-ressources/host_vars/${var.server_name}.yml"
   }
 
   provisioner "remote-exec" {
@@ -28,7 +27,7 @@ resource "aws_instance" "ic-webapp-ec2" {
     connection {
       type        = "ssh"
       user        = var.user
-      private_key = file("./${var.ssh_key}.pem")
+      private_key = file("../../../${var.ssh_key}.pem")
       host        = self.public_ip
     }
   }

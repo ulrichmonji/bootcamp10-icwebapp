@@ -145,15 +145,14 @@ pipeline {
                 }
             }
 
-            stage ("Ping  targeted hosts") {
+            stage ("Ping  targeted hosts (prod only)") {
                 steps {
                     script {
                         sh '''
                             apt update -y
                             apt install sshpass -y                            
                             export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                            ansible prod -m ping --private-key id_rsa
-                            ansible dev -m ping --private-key devops.pem -l prod
+                            ansible all -m ping --private-key id_rsa -l prod
                         '''
                     }
                 }

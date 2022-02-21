@@ -83,31 +83,29 @@ pipeline {
           }
        }*/
 
-       stage ('Prepare Ansible and Terraform environment') {
+       stage ('Prepare Ansible environment') {
           agent any
           environment {
             VAULT_KEY = credentials('vault_key')
             PRIVATE_KEY = credentials('private_key')
-            PRIVATE_AWS_KEY = credentials('private_aws_key')
           }          
           steps {
              script {
                sh '''
                   echo $VAULT_KEY > vault.key
                   echo $PRIVATE_KEY > id_rsa
-                  echo $PRIVATE_AWS_KEY > devops.pem
                   chmod 600 id_rsa
-                  chmod 600 devops.pem
                '''
              }
           }
        }
 
-       stage ('Deploy AWS EC2') {
+       stage ('Deploy AWS EC2 with terraform') {
           agent { docker { image 'jenkins/jnlp-agent-terraform'  } }
           environment {
             AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
             AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
+            PRIVATE_AWS_KEY = credentials('private_aws_key')
           }          
           steps {
              script {
@@ -115,6 +113,8 @@ pipeline {
                    input message: "Confirmer la creation de ressources dans AWS ?", ok: 'Yes'
                }*/
                sh '''
+                  echo $PRIVATE_AWS_KEY > devops.pem
+                  chmod 600 devops.pem
                   mkdir -p ~/.aws
                   echo "[default]" >> ~/.aws/credentials
                   echo $AWS_ACCESS_KEY_ID >> ~/.aws/credentials

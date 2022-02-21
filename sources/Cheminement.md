@@ -133,6 +133,8 @@ En plus des paramètres et tokens utilisé à la partie CI, on aura aussi besoin
 |----------------------|------------------|-----------------|------------------------------|
 |     vault_key        | secret text      |      N/A        |  Mot de pass vault ansible   |
 |    private_key       | secret text      |      N/A        |   Clés privé ssh du user     |
+|    prublic_key       | secret text      |      N/A        |   Clés publique ssh du user  |
+|  vagrant_password    | secret text      |      N/A        |    mdp du user vagrant       |
 |       slack          | secret text      |      N/A        |   Token channel slack        |
 |  aws_access_key_id   | secret text      |      N/A        |       access key aws         |
 | aws_secret_access_key| secret text      |      N/A        |       secret key aws         |

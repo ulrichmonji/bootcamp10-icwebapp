@@ -16,21 +16,5 @@ resource "aws_instance" "ic-webapp-ec2" {
     command = "echo ansible_host: ${var.public_ip} >> ../../ansible-ressources/host_vars/${var.server_name}.yml"
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo yum update -y",
-      "sudo amazon-linux-extras install docker",
-      "sudo service docker start",
-      "sudo systemctl enable docker",
-      "sudo usermod -a -G docker ec2-user"
-    ]
-    connection {
-      type        = "ssh"
-      user        = var.user
-      private_key = file("/tmp/${var.ssh_key}.pem")
-      host        = self.public_ip
-    }
-  }
-
 }
 

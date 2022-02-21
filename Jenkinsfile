@@ -88,12 +88,18 @@ pipeline {
           environment {
             VAULT_KEY = credentials('vault_key')
             PRIVATE_KEY = credentials('private_key')
+            PUBLIC_KEY = credentials('public_key')
+            VAGRANT_PASSWORD = credentials('vagrant_password')
           }          
           steps {
              script {
                sh '''
+                  echo "Cleaning workspace before starting"
+                  rm -f vault.key id_rsa id_rsa.pub password
                   echo $VAULT_KEY > vault.key
                   echo $PRIVATE_KEY > id_rsa
+                  echo $PUBLIC_KEY > id_rsa.pub
+                  echo $VAGRANT_PASSWORD > password
                   chmod 400 id_rsa
                '''
              }
@@ -148,6 +154,8 @@ pipeline {
                         sh '''
                             apt update -y
                             apt install sshpass -y 
+                            sshpass -f password  ssh-copy-id  -i id_rsa  vagrant@odoo
+                            sshpass -f password  ssh-copy-id  -i id_rsa  vagrant@icwebapp
                             export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
                             ansible all -m ping --private-key id_rsa  -l prod
                         '''
@@ -175,10 +183,7 @@ pipeline {
                                 sh '''
                                     export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
                                     ansible-playbook sources/ansible-ressources/playbooks/install-docker.yml --vault-password-file vault.key --private-key id_rsa -l odoo_server,pg_admin_server
-                                '''
-
-                                
-                                
+                                '''                                
                             }
                         }
                     }
@@ -210,6 +215,8 @@ pipeline {
                                 sh '''
                                     export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
                                     ansible-playbook sources/ansible-ressources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key --private-key id_rsa -l ic_webapp
+                                    echo "Cleaning workspace after starting"
+                                    rm -f vault.key id_rsa id_rsa.pub password
                                 '''
                             }
                         }
@@ -221,6 +228,8 @@ pipeline {
 
         }
       }
+
+
     }  
 
     post {

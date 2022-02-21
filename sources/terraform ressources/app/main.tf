@@ -2,6 +2,15 @@ provider "aws" {
   region                   = "us-east-1"
 }
 
+# terraform {
+#   backend "s3" {
+#     bucket                  = "terraform-backend-ulrich"
+#     key                     = "ulrich-dev.tfstate"
+#     region                  = "us-east-1"
+#   }
+# }
+
+
 # Création du sg
 module "sg" {
   source = "../modules/sg"

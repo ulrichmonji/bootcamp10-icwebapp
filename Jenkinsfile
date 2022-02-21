@@ -114,15 +114,13 @@ pipeline {
                }*/
                sh '''
                   echo $PRIVATE_AWS_KEY > /tmp/devops.pem
-                  chmod 400 devops.pem
+                  chmod 400 /tmp/devops.pem
                   mkdir -p ~/.aws
                   echo "[default]" > ~/.aws/credentials
                   echo "aws_access_key_id=$AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
                   echo "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
                   chmod 400 ~/.aws/credentials
                   cd "./sources/terraform ressources/app"
-                  echo "DEBUG"
-                  export TF_LOG=DEBUG
                   terraform init
                   terraform plan
                   terraform apply --auto-approve

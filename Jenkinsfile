@@ -128,7 +128,7 @@ pipeline {
                   chmod 400 ~/.aws/credentials
                   cd "./sources/terraform ressources/app"
                   terraform init 
-                  terraform plan --auto-approve
+                  terraform plan
                   terraform apply --auto-approve
 
                '''

@@ -122,8 +122,7 @@ pipeline {
                   chmod 600 ~/.aws/credentials
                   cd "./sources/terraform ressources/app"
                   echo "DEBUG"
-                  cat "/var/jenkins_home/workspace/ic-webapp/devops.pem"
-                  ls -l "/var/jenkins_home/workspace/ic-webapp/devops.pem"
+                  TF_LOG=DEBUG
                   terraform init
                   terraform plan
 

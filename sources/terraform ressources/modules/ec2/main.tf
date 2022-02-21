@@ -28,7 +28,6 @@ resource "aws_instance" "ic-webapp-ec2" {
       type        = "ssh"
       user        = var.user
       private_key = file("/var/jenkins_home/workspace/ic-webapp/${var.ssh_key}.pem")
-      
       host        = self.public_ip
     }
   }

@@ -126,7 +126,7 @@ pipeline {
                   terraform init
                   terraform plan
 
-                  terraform apply --auto-approve -var='private_key=file("/var/jenkins_home/workspace/ic-webapp/${var.ssh_key}.pem")'
+                  terraform apply --auto-approve -var='private_key=file("/var/jenkins_home/workspace/ic-webapp/devops.pem")'
 
                '''
              }

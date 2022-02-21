@@ -114,19 +114,18 @@ pipeline {
                }*/
                sh '''
                   echo $PRIVATE_AWS_KEY > devops.pem
-                  chmod 600 devops.pem
+                  chmod 400 devops.pem
                   mkdir -p ~/.aws
                   echo "[default]" >> ~/.aws/credentials
                   echo $AWS_ACCESS_KEY_ID >> ~/.aws/credentials
                   echo $AWS_SECRET_ACCESS_KEY >> ~/.aws/credentials
-                  chmod 600 ~/.aws/credentials
+                  chmod 400 ~/.aws/credentials
                   cd "./sources/terraform ressources/app"
                   echo "DEBUG"
-                  TF_LOG=DEBUG
+                  export TF_LOG=DEBUG
                   terraform init
                   terraform plan
-
-                  terraform apply --auto-approve -var='private_key=file("/var/jenkins_home/workspace/ic-webapp/devops.pem")'
+                  terraform apply --auto-approve
 
                '''
              }

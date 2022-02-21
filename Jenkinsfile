@@ -153,7 +153,8 @@ pipeline {
                     script {
                         sh '''
                             apt update -y
-                            apt install sshpass -y 
+                            apt install sshpass -y
+                            cp  id_rsa.pub ~/.ssh/
                             sshpass -f password  ssh-copy-id  -i id_rsa  vagrant@odoo
                             sshpass -f password  ssh-copy-id  -i id_rsa  vagrant@icwebapp
                             export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg

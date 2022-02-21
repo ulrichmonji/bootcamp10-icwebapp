@@ -182,7 +182,7 @@ pipeline {
                                 sh '''
                                     cd "./sources/terraform ressources/app"
                                     terraform destroy --auto-approve 
-                                    cd - 
+                                    cd -
                                     export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
                                     ansible-playbook sources/ansible-ressources/playbooks/install-docker.yml --vault-password-file vault.key --private-key id_rsa -l odoo_server,pg_admin_server
                                 '''                                

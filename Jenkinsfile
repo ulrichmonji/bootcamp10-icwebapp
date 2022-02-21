@@ -171,18 +171,23 @@ pipeline {
 
             stage ("Deploy in PRODUCTION") {
                 when { expression { GIT_BRANCH == 'origin/main'} }   
-                timeout(time: 1, unit: "MINUTES") {
-                    input message: "Confirmer la creation de ressources dans AWS ?", ok: 'Yes'
-                }                             
+                steps {
+                    script {       
+                        timeout(time: 1, unit: "MINUTES") {
+                            input message: "Confirmer vous la suppression de ressources dans AWS ?", ok: 'Yes'
+                        } 
+                        sh'''
+                            cd "./sources/terraform ressources/app"
+                            terraform destroy --auto-approve
+                        '''                            
+                    }
+                }                        
                 stages {
                     stage ("PRODUCTION - Install Docker on all hosts") {
                         steps {
                             script {
 
                                 sh '''
-                                    cd "./sources/terraform ressources/app"
-                                    terraform destroy --auto-approve 
-                                    cd -
                                     export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
                                     ansible-playbook sources/ansible-ressources/playbooks/install-docker.yml --vault-password-file vault.key --private-key id_rsa -l odoo_server,pg_admin_server
                                 '''                                

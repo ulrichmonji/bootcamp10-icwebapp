@@ -121,8 +121,12 @@ pipeline {
                   echo $AWS_SECRET_ACCESS_KEY >> ~/.aws/credentials
                   chmod 600 ~/.aws/credentials
                   cd "./sources/terraform ressources/app"
+                  echo "DEBUG"
+                  cat "/var/jenkins_home/workspace/ic-webapp/devops.pem"
+                  ls -l "/var/jenkins_home/workspace/ic-webapp/devops.pem"
                   terraform init
                   terraform plan
+
                   terraform apply --auto-approve
 
                '''

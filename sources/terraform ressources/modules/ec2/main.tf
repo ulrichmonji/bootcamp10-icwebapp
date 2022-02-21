@@ -14,7 +14,7 @@ resource "aws_instance" "ic-webapp-ec2" {
 
   provisioner "local-exec" {
   //  command = "echo ansible_host: ${var.public_ip} >> ./sources/ansible-ressources/host_vars/${var.server_name}.yml" 
-    command = "echo $PWD" 
+    command = "echo working_dir =  $PWD" 
   }
 
   provisioner "remote-exec" {

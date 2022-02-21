@@ -111,12 +111,15 @@ pipeline {
           }          
           steps {
              script {
+               timeout(time: 15, unit: "MINUTES") {
+                   input message: "Confirmer la creation de ressources dans AWS ?", ok: 'Yes'
+               }
                sh '''
                   mkdir -p ~/.aws
                   echo "[default]" >> ~/.aws/credentials
                   echo $AWS_ACCESS_KEY_ID >> ~/.aws/credentials
                   echo $AWS_SECRET_ACCESS_KEY >> ~/.aws/credentials
-                  chmod 600 aws_credential
+                  chmod 600 ~/.aws/credentials
                   cd ./sources/terraform ressources/app
                   terraform init
                   terraform plan

@@ -95,12 +95,13 @@ pipeline {
              script {
                sh '''
                   echo "Cleaning workspace before starting"
-                  rm -f vault.key id_rsa id_rsa.pub password
+                  rm -f vault.key id_rsa id_rsa.pub password devops.pem
                   echo $VAULT_KEY > vault.key
                   echo $PRIVATE_KEY > id_rsa
                   echo $PUBLIC_KEY > id_rsa.pub
                   echo $VAGRANT_PASSWORD > password
-                  chmod 400 id_rsa
+                  echo $PRIVATE_AWS_KEY > devops.pem
+                  chmod 400 devops.pem id_rsa
                '''
              }
           }
@@ -119,8 +120,7 @@ pipeline {
                    input message: "Confirmer la creation de ressources dans AWS ?", ok: 'Yes'
                }*/
                sh '''
-                  echo $PRIVATE_AWS_KEY > /tmp/devops.pem
-                  chmod 400 /tmp/devops.pem
+
                   mkdir -p ~/.aws
                   echo "[default]" > ~/.aws/credentials
                   echo "aws_access_key_id=$AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
@@ -156,10 +156,11 @@ pipeline {
                             apt install sshpass -y
                             mkdir -p ~/.ssh/
                             cp  id_rsa.pub ~/.ssh/
-                            sshpass -f password  ssh-copy-id  -i id_rsa  vagrant@192.168.99.11
-                            sshpass -f password  ssh-copy-id  -i id_rsa  vagrant@192.168.99.12
+                            sshpass -f password  ssh-copy-id  -i id_rsa  -f vagrant@192.168.99.11
+                            sshpass -f password  ssh-copy-id  -i id_rsa  -f vagrant@192.168.99.12
                             export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                            ansible all -m ping --private-key id_rsa  -l prod
+                            ansible prod -m ping --private-key id_rsa
+                            ansible dev -m ping --private-key devops.pem
                         '''
                     }
                 }
@@ -218,7 +219,7 @@ pipeline {
                                     export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
                                     ansible-playbook sources/ansible-ressources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key --private-key id_rsa -l ic_webapp
                                     echo "Cleaning workspace after starting"
-                                    rm -f vault.key id_rsa id_rsa.pub password
+                                    rm -f vault.key id_rsa id_rsa.pub password devops.pem
                                 '''
                             }
                         }

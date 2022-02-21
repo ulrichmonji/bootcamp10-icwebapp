@@ -94,7 +94,7 @@ pipeline {
                sh '''
                   echo $VAULT_KEY > vault.key
                   echo $PRIVATE_KEY > id_rsa
-                  chmod 600 id_rsa
+                  chmod 400 id_rsa
                '''
              }
           }
@@ -113,12 +113,12 @@ pipeline {
                    input message: "Confirmer la creation de ressources dans AWS ?", ok: 'Yes'
                }*/
                sh '''
-                  echo $PRIVATE_AWS_KEY > devops.pem
+                  echo $PRIVATE_AWS_KEY > /tmp/devops.pem
                   chmod 400 devops.pem
                   mkdir -p ~/.aws
-                  echo "[default]" >> ~/.aws/credentials
-                  echo $AWS_ACCESS_KEY_ID >> ~/.aws/credentials
-                  echo $AWS_SECRET_ACCESS_KEY >> ~/.aws/credentials
+                  echo "[default]" > ~/.aws/credentials
+                  echo "aws_access_key_id=$AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
+                  echo "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
                   chmod 400 ~/.aws/credentials
                   cd "./sources/terraform ressources/app"
                   echo "DEBUG"

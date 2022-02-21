@@ -1,5 +1,5 @@
 resource "aws_instance" "ic-webapp-ec2" {
-  ami               = "ami-0ff8a91507f77f867"
+  ami               = "ami-033b95fb8079dc481"
   instance_type     = var.instance_type
   key_name          = var.ssh_key
   availability_zone = var.AZ
@@ -18,7 +18,7 @@ resource "aws_instance" "ic-webapp-ec2" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo apt update -y",
+      "sudo yum update -y",
       "sudo amazon-linux-extras install docker",
       "sudo service docker start",
       "sudo systemctl enable docker",
@@ -27,7 +27,7 @@ resource "aws_instance" "ic-webapp-ec2" {
     connection {
       type        = "ssh"
       user        = var.user
-      private_key = file("/var/jenkins_home/workspace/ic-webapp/${var.ssh_key}.pem")
+      private_key = file("/tmp/${var.ssh_key}.pem")
       host        = self.public_ip
     }
   }

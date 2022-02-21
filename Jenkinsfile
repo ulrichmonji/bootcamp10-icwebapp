@@ -48,7 +48,7 @@ pipeline {
               '''
              }
           }
-       }*/
+       }
        stage('Test image') {
            agent any
            steps {
@@ -69,7 +69,7 @@ pipeline {
                '''
              }
           }
-       }
+       }*/
 
        /*stage ('Login and Push Image on docker hub') {
           agent any

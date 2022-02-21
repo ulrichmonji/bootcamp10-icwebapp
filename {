@@ -1,0 +1,57 @@
+Script started on Mon 21 Feb 2022 07:56:24 PM UTC
+                                timeout(time: 1, unit: "MINUTES") {
+                                    input message: "Confirmer vous la suppression de ressources dans AWS ?", ok: 'Yes'
+                                } 
+                                sh'''
+                                    cd "./sources/terraform ressources/app"
+                                    terraform destroy --auto-approve
+                                '''                            
+                            }
+                        }
+                    }   
+------------------------------------------------------   ]0;vagrant@jenkins:~/ic-webapp[?1034h[vagrant@jenkins ic-webapp]$                                 timeout(time: 1, unit: "MINUTES") {
+bash: syntax error near unexpected token `time:'
+]0;vagrant@jenkins:~/ic-webapp[vagrant@jenkins ic-webapp]$                                     input message: "Confirmer vous la suppression  de ressources dans AWS ?", ok: 'Yes'
+bash: input: command not found
+]0;vagrant@jenkins:~/ic-webapp[vagrant@jenkins ic-webapp]$                                 } 
+bash: syntax error near unexpected token `}'
+]0;vagrant@jenkins:~/ic-webapp[vagrant@jenkins ic-webapp]$                                 sh'''
+>                                     cd "./sources/terraform ressources/app"
+>                                     terraform destroy --auto-approve
+>                                 '''                            
+bash: sh
+                                    cd "./sources/terraform ressources/app"
+                                    terraform destroy --auto-approve
+                                : No such file or directory
+]0;vagrant@jenkins:~/ic-webapp[vagrant@jenkins ic-webapp]$                             }
+bash: syntax error near unexpected token `}'
+]0;vagrant@jenkins:~/ic-webapp[vagrant@jenkins ic-webapp]$                         }
+bash: syntax error near unexpected token `}'
+]0;vagrant@jenkins:~/ic-webapp[vagrant@jenkins ic-webapp]$                     }   
+bash: syntax error near unexpected token `}'
+]0;vagrant@jenkins:~/ic-webapp[vagrant@jenkins ic-webapp]$ ------------------------------------------------------   ^C
+]0;vagrant@jenkins:~/ic-webapp[vagrant@jenkins ic-webapp]$ [7P(reverse-i-search)`':[Ca':                                 sh'''
+                                    cd "./sources/terraform ressources/app"
+                                    terraform destroy --auto-approve
+                                '''                            [A[A[A[6@[vagrant@jenkins ic-webapp]$
+
+
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C^C
+]0;vagrant@jenkins:~/ic-webapp[vagrant@jenkins ic-webapp]$ 
+]0;vagrant@jenkins:~/ic-webapp[vagrant@jenkins ic-webapp]$ 
+]0;vagrant@jenkins:~/ic-webapp[vagrant@jenkins ic-webapp]$ 
+]0;vagrant@jenkins:~/ic-webapp[vagrant@jenkins ic-webapp]$ 
+]0;vagrant@jenkins:~/ic-webapp[vagrant@jenkins ic-webapp]$ [7P(reverse-i-search)`':[Ca':                                 sh'''
+                                    cd "./sources/terraform ressources/app"
+                                    terraform destroy --auto-approve
+                                '''                            [A[A[A[6@[vagrant@jenkins ic-webapp]$
+
+
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C
+bash: sh
+                                    cd "./sources/terraform ressources/app"
+                                    terraform destroy --auto-approve
+                                : No such file or directory
+]0;vagrant@jenkins:~/ic-webapp[vagrant@jenkins ic-webapp]$ 
+]0;vagrant@jenkins:~/ic-webapp[vagrant@jenkins ic-webapp]$ 
+]0;vagrant@jenkins:~/ic-webapp[v

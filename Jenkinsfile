@@ -133,7 +133,7 @@ pipeline {
           }
        }
 
-
+                    
       stage('Deploy application ') {
         agent { docker { image 'registry.gitlab.com/robconnolly/docker-ansible:latest'  } }
         stages {
@@ -171,26 +171,7 @@ pipeline {
 
             stage ("Deploy in PRODUCTION") {
                 when { expression { GIT_BRANCH == 'origin/main'} }                     
-                stages {
-                    stage ("Delete Dev environment") {
-                        agent { docker { image 'jenkins/jnlp-agent-terraform'  } }
-                        environment {
-                            AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
-                            AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
-                            PRIVATE_AWS_KEY = credentials('private_aws_key')
-                        }
-                        steps {
-                            script {       
-                                timeout(time: 1, unit: "MINUTES") {
-                                    input message: "Confirmer vous la suppression de ressources dans AWS ?", ok: 'Yes'
-                                } 
-                                sh'''
-                                    cd "./sources/terraform ressources/app"
-                                    terraform destroy --auto-approve
-                                '''                            
-                            }
-                        }
-                    }                                         
+                stages {                                       
                     stage ("PRODUCTION - Install Docker on all hosts") {
                         steps {
                             script {
@@ -244,7 +225,25 @@ pipeline {
         }
       }
 
-
+      stage ("Delete Dev environment") {
+        agent { docker { image 'jenkins/jnlp-agent-terraform'  } }
+        environment {
+            AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
+            AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')
+            PRIVATE_AWS_KEY = credentials('private_aws_key')
+        }
+        steps {
+            script {       
+                timeout(time: 1, unit: "MINUTES") {
+                    input message: "Confirmer vous la suppression de ressources dans AWS ?", ok: 'Yes'
+                } 
+                sh'''
+                    cd "./sources/terraform ressources/app"
+                    terraform destroy --auto-approve
+                '''                            
+            }
+        }
+      }   
     }  
 
     post {

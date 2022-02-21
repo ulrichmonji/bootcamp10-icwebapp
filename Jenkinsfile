@@ -111,9 +111,9 @@ pipeline {
           }          
           steps {
              script {
-               timeout(time: 1, unit: "MINUTES") {
+               /*timeout(time: 1, unit: "MINUTES") {
                    input message: "Confirmer la creation de ressources dans AWS ?", ok: 'Yes'
-               }
+               }*/
                sh '''
                   mkdir -p ~/.aws
                   echo "[default]" >> ~/.aws/credentials

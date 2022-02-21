@@ -153,13 +153,7 @@ pipeline {
                     script {
                         sh '''
                             apt update -y
-                            apt install sshpass -y
-                            mkdir -p ~/.ssh/
-                            cp  id_rsa.pub ~/.ssh/
-                            '''
-                            sh 'sshpass -f password  ssh-copy-id  -i id_rsa  -f vagrant@192.168.99.11'
-                            sh '''
-                            sshpass -f password  ssh-copy-id  -i id_rsa  -f vagrant@192.168.99.12
+                            apt install sshpass -y                            
                             export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
                             ansible prod -m ping --private-key id_rsa
                             ansible dev -m ping --private-key devops.pem

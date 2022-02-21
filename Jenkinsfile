@@ -154,6 +154,7 @@ pipeline {
                         sh '''
                             apt update -y
                             apt install sshpass -y
+                            mkdir -p ~/.ssh/
                             cp  id_rsa.pub ~/.ssh/
                             sshpass -f password  ssh-copy-id  -i id_rsa  vagrant@odoo
                             sshpass -f password  ssh-copy-id  -i id_rsa  vagrant@icwebapp

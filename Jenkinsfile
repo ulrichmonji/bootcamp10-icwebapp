@@ -20,7 +20,7 @@ pipeline {
               }
            }
        }
-       stage('Scan Image with  SNYK') {
+       /*stage('Scan Image with  SNYK') {
             agent any
             environment{
                 SNYK_TOKEN = credentials('snyk_token')
@@ -35,7 +35,7 @@ pipeline {
                     '''
                 }
             }
-       }
+       }*/
        stage('Run container based on builded image') {
           agent any
           steps {

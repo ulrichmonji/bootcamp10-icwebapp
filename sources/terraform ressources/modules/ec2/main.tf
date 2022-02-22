@@ -13,8 +13,7 @@ resource "aws_instance" "ic-webapp-ec2" {
   }
 
   provisioner "local-exec" {
-    command = "echo ansible_host: ${var.public_ip} > ../../ansible-ressources/host_vars/${var.server_name}.yml-backup.provision"
-#     command = "export IC_WEBAPP_SERVER_DEV=${var.public_ip}"
+    command = "echo IP: ${var.public_ip} > /var/jenkins_home/workspace/ic-webapp/public_ip.txt"
   }
 
 }

@@ -84,30 +84,6 @@ pipeline {
           }
        }*/
 
-       stage ('Prepare Ansible environment') {
-          agent any
-          environment {
-            VAULT_KEY = credentials('vault_key')
-            PRIVATE_KEY = credentials('private_key')
-            PUBLIC_KEY = credentials('public_key')
-            VAGRANT_PASSWORD = credentials('vagrant_password')
-          }          
-          steps {
-             script {
-               sh '''
-                  echo "Cleaning workspace before starting"
-                  rm -f vault.key id_rsa id_rsa.pub password devops.pem
-                  echo $VAULT_KEY > vault.key
-                  echo $PRIVATE_KEY > id_rsa
-                  echo $PUBLIC_KEY > id_rsa.pub
-                  echo $VAGRANT_PASSWORD > password
-                  echo $PRIVATE_AWS_KEY > devops.pem
-                  chmod 400 devops.pem id_rsa
-               '''
-             }
-          }
-       }
-
        stage ('Deploy AWS EC2 with terraform') {
           agent { 
                     docker { 
@@ -132,19 +108,45 @@ pipeline {
                   terraform destroy --auto-approve
                   terraform plan
                   terraform apply --auto-approve
-                  echo "ansible_host: $(terraform output output_eip)" #> ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml
-                  #echo "ansible_host: $(terraform output output_eip)" > ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml
-                  cat ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml
-                  echo "ansible_host: $(terraform output output_eip)" > ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml-backup
-                  cat ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml-backup
-                  cat ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml-backup.provision
                '''
              }
           }
        }
 
+       stage ('Prepare Ansible environment') {
+          agent any
+          environment {
+            VAULT_KEY = credentials('vault_key')
+            PRIVATE_KEY = credentials('private_key')
+            PUBLIC_KEY = credentials('public_key')
+            VAGRANT_PASSWORD = credentials('vagrant_password')
+          }          
+          steps {
+             script {
+               sh '''
+                  echo "Cleaning workspace before starting"
+                  rm -f vault.key id_rsa id_rsa.pub password devops.pem
+                  echo "Generating vault key"
+                  echo $VAULT_KEY > vault.key
+                  echo "Generating private key"
+                  echo $PRIVATE_KEY > id_rsa
+                  #echo "Generating public key"
+                  #echo $PUBLIC_KEY > id_rsa.pub
+                  #echo $VAGRANT_PASSWORD > password
+                  #echo "Generating aws private key"
+                  echo $PRIVATE_AWS_KEY > devops.pem
+                  chmod 400 devops.pem id_rsa
+                  echo "Generating host_vars for EC2 servers"
+                  echo "ansible_host: $(awk '{print $2}' public_ip.txt)" >> sources/ansible-ressources/host_vars/odoo_server_dev.yml
+                  echo "ansible_host: $(awk '{print $2}' public_ip.txt)" >> sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
+                  echo "ansible_host: $(awk '{print $2}' public_ip.txt)" >> sources/ansible-ressources/host_vars/pg_admin_server_dev/yml
+
+               '''
+             }
+          }
+       }
                     
-      stage('Deploy application ') {
+      stage('Deploy application') {
         agent { docker { image 'registry.gitlab.com/robconnolly/docker-ansible:latest'  } }
         stages {
             stage ("Install Ansible role dependencies") {

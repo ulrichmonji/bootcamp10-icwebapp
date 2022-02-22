@@ -152,8 +152,6 @@ pipeline {
             stage ("Install Ansible role dependencies") {
                 steps {
                     script {
-                        sh 'cat sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml-backup'
-                        sh 'cat sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml'
                         sh 'echo launch ansible-galaxy install -r roles/requirement.yml if needed'
                     }
                 }
@@ -192,7 +190,7 @@ pipeline {
 
                                 sh '''
                                     export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                                    ansible-playbook sources/ansible-ressources/playbooks/install-docker.yml --vault-password-file vault.key  -l ic_webapp_server_dev
+                                    ansible-playbook sources/ansible-ressources/playbooks/install-docker.yml --vault-password-file vault.key  --private-key devops.pem -l ic_webapp_server_dev
                                 '''                                
                             }
                         }
@@ -281,7 +279,9 @@ pipeline {
                                     export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
                                     ansible-playbook sources/ansible-ressources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key  -l ic_webapp
                                     echo "Cleaning workspace after starting"
-                                    rm -f vault.key id_rsa id_rsa.pub password devops.pem
+                                    rm -f vault.key id_rsa id_rsa.pub password 
+                                    
+
                                 '''
                             }
                         }
@@ -309,6 +309,8 @@ pipeline {
                 sh'''
                     cd "./sources/terraform ressources/app"
                     terraform destroy --auto-approve
+                    rm -rf sources/ansible-ressources/host_vars/*.dev.yml
+                    rm -rf devops.pem
                 '''                            
             }
         }

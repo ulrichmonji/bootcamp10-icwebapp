@@ -117,7 +117,6 @@ pipeline {
           steps {
              script {
                sh '''
-
                   mkdir -p ~/.aws
                   echo "[default]" > ~/.aws/credentials
                   echo "aws_access_key_id=$AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
@@ -127,7 +126,6 @@ pipeline {
                   terraform init 
                   terraform plan
                   terraform apply --auto-approve
-
                '''
              }
           }
@@ -168,7 +166,62 @@ pipeline {
                     }
                 }
             }
+/*---------------------*/
+            stage ("Deploy in DEV for testing") {
+                when { expression { GIT_BRANCH == 'origin/main'} }                     
+                stages {                                       
+                    stage ("DEV - Install Docker on ec2 hosts") {
+                        steps {
+                            script {
 
+                                sh '''
+                                    export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
+                                    ansible-playbook sources/ansible-ressources/playbooks/install-docker.yml --vault-password-file vault.key  -l ic_webapp_server_dev
+                                '''                                
+                            }
+                        }
+                    }
+
+                    stage ("DEV - Deploy pgadmin") {
+                        steps {
+                            script {
+                                sh '''
+                                    export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
+                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-pgadmin.yml --vault-password-file vault.key  -l pg_admin_server_dev
+                                '''
+                            }
+                        }
+                    }
+                    stage ("DEV - Deploy odoo") {
+                        steps {
+                            script {
+                                sh '''
+                                    export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
+                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-odoo.yml --vault-password-file vault.key  -l odoo_server_dev
+                                '''
+                            }
+                        }
+                    }
+
+                    stage ("DEV - Deploy ic-webapp") {
+                        steps {
+                            script {
+                                sh '''
+                                    export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
+                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key  -l ic_webapp_server_dev
+                                    echo "Cleaning workspace after starting"
+                                    rm -f vault.key id_rsa id_rsa.pub password devops.pem
+                                '''
+                            }
+                        }
+                    }
+
+
+                }
+            }
+
+
+/*---------------------*/
             stage ("Deploy in PRODUCTION") {
                 when { expression { GIT_BRANCH == 'origin/main'} }                     
                 stages {                                       

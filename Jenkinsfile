@@ -139,7 +139,7 @@ pipeline {
                   echo "Generating host_vars for EC2 servers"
                   echo "ansible_host: $(awk '{print $2}' public_ip.txt)" >> sources/ansible-ressources/host_vars/odoo_server_dev.yml
                   echo "ansible_host: $(awk '{print $2}' public_ip.txt)" >> sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
-                  echo "ansible_host: $(awk '{print $2}' public_ip.txt)" >> sources/ansible-ressources/host_vars/pg_admin_server_dev/yml
+                  echo "ansible_host: $(awk '{print $2}' public_ip.txt)" >> sources/ansible-ressources/host_vars/pg_admin_server_dev.yml
 
                '''
              }

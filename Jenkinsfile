@@ -108,7 +108,12 @@ pipeline {
        }
 
        stage ('Deploy AWS EC2 with terraform') {
-          agent { docker { image 'jenkins/jnlp-agent-terraform'  } }
+          agent { 
+                    docker { 
+                            image 'jenkins/jnlp-agent-terraform'  
+                            args '-v $WORKSPACE/:/var/jenkins_home/workspace/ic-webapp'
+                    } 
+                }
           environment {
             AWS_ACCESS_KEY_ID = credentials('aws_access_key_id')
             AWS_SECRET_ACCESS_KEY = credentials('aws_secret_access_key')

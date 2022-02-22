@@ -107,7 +107,7 @@ pipeline {
                   echo -e "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
                   chmod 400 ~/.aws/credentials
                   echo "Generating aws private key"
-                  echo -e $PRIVATE_AWS_KEY > devops.pem
+                  cp $PRIVATE_AWS_KEY devops.pem
                   chmod 400 devops.pem
                   cd "./sources/terraform ressources/app"
                   terraform init 
@@ -135,7 +135,7 @@ pipeline {
                   echo "Generating vault key"
                   echo -e $VAULT_KEY > vault.key
                   echo "Generating private key"
-                  echo -e $PRIVATE_KEY > id_rsa
+                  cp $PRIVATE_KEY  id_rsa
                   chmod 400 id_rsa vault.key
                   #echo "Generating public key"
                   #echo -e $PUBLIC_KEY > id_rsa.pub

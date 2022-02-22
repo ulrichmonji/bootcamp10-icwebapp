@@ -132,6 +132,7 @@ pipeline {
                   terraform init 
                   terraform plan
                   terraform apply --auto-approve
+                  echo "ansible_host: $(terraform output output_eip)" > ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml
                '''
              }
           }
@@ -182,7 +183,6 @@ pipeline {
 
                                 sh '''
                                     export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                                    echo "ansible_host: $(terraform output output_eip)" > sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
                                     ansible-playbook sources/ansible-ressources/playbooks/install-docker.yml --vault-password-file vault.key  -l ic_webapp_server_dev
                                 '''                                
                             }

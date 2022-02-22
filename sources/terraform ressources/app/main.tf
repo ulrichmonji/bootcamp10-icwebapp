@@ -16,7 +16,7 @@ module "sg" {
   source = "../modules/sg"
 }
 
-# Création de l'EIP p
+# Création de l'EIP
 module "eip" {
   source = "../modules/eip"
 }

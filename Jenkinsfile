@@ -98,7 +98,9 @@ pipeline {
           steps {
              script {
                sh '''
-                  echo "Generating aws credentials "
+                  echo "Generating aws credentials"
+                  echo "Deleting older if exist"
+                  rm -rf devops.pem ~/.aws
                   mkdir -p ~/.aws
                   echo "[default]" > ~/.aws/credentials
                   echo "aws_access_key_id=$AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
@@ -106,6 +108,7 @@ pipeline {
                   chmod 400 ~/.aws/credentials
                   echo "Generating aws private key"
                   echo $PRIVATE_AWS_KEY > devops.pem
+                  chmod 400 devops.pem
                   cd "./sources/terraform ressources/app"
                   terraform init 
                   terraform destroy --auto-approve
@@ -128,15 +131,15 @@ pipeline {
              script {
                sh '''
                   echo "Cleaning workspace before starting"
-                  rm -f vault.key id_rsa id_rsa.pub password devops.pem
+                  rm -f vault.key id_rsa id_rsa.pub password
                   echo "Generating vault key"
                   echo $VAULT_KEY > vault.key
                   echo "Generating private key"
                   echo $PRIVATE_KEY > id_rsa
+                  chmod 400 id_rsa vault.key
                   #echo "Generating public key"
                   #echo $PUBLIC_KEY > id_rsa.pub
                   #echo $VAGRANT_PASSWORD > password
-                  chmod 400 devops.pem id_rsa
                   echo "Generating host_vars for EC2 servers"
                   echo "ansible_host: $(awk '{print $2}' public_ip.txt)" >> sources/ansible-ressources/host_vars/odoo_server_dev.yml
                   echo "ansible_host: $(awk '{print $2}' public_ip.txt)" >> sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml

@@ -111,7 +111,6 @@ pipeline {
           agent { 
                     docker { 
                             image 'jenkins/jnlp-agent-terraform'  
-                            args '-v /var/jenkins_home/workspace/ic-webapp:/var/jenkins_home/workspace/ic-webapp'
                     } 
                 }
           environment {

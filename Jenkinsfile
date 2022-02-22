@@ -182,7 +182,7 @@ pipeline {
 
                                 sh '''
                                     export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                                    echo ansible_host: ${IC_WEBAPP_SERVER_DEV} > sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
+                                    echo "ansible_host: $(terraform output output_eip)" > sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
                                     ansible-playbook sources/ansible-ressources/playbooks/install-docker.yml --vault-password-file vault.key  -l ic_webapp_server_dev
                                 '''                                
                             }

@@ -103,7 +103,7 @@ pipeline {
                   rm -rf devops.pem ~/.aws
                   mkdir -p ~/.aws
                   echo "[default]" > ~/.aws/credentials
-                  echo -e"aws_access_key_id=$AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
+                  echo -e "aws_access_key_id=$AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
                   echo -e "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
                   chmod 400 ~/.aws/credentials
                   echo "Generating aws private key"
@@ -284,9 +284,7 @@ pipeline {
                                     export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
                                     ansible-playbook sources/ansible-ressources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key  -l ic_webapp
                                     echo "Cleaning workspace after starting"
-                                    rm -f vault.key id_rsa id_rsa.pub password 
-                                    
-
+                                    rm -f vault.key id_rsa id_rsa.pub password
                                 '''
                             }
                         }

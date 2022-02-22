@@ -1,5 +1,5 @@
 ---
-- hosts: ic_webapp:ic_webapp_dev
+- hosts: prod:dev
   become: true
   vars:
     ansible_python_interpreter: /usr/bin/python3

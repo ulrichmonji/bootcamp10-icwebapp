@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: prod:dev
   become: true
   gather_facts: yes
   roles:

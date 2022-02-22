@@ -8,6 +8,7 @@ pipeline {
         DOCKERHUB_ID = "choco1992"
         DOCKERHUB_PASSWORD = credentials('dockerhub_password')
         ANSIBLE_IMAGE_AGENT = "registry.gitlab.com/robconnolly/docker-ansible:latest"
+        IC_WEBAPP_SERVER_DEV = "127.0.0.1"
     }
     agent none
     stages {
@@ -181,6 +182,7 @@ pipeline {
 
                                 sh '''
                                     export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
+                                    echo ansible_host: ${IC_WEBAPP_SERVER_DEV} > sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
                                     ansible-playbook sources/ansible-ressources/playbooks/install-docker.yml --vault-password-file vault.key  -l ic_webapp_server_dev
                                 '''                                
                             }

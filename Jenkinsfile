@@ -228,8 +228,6 @@ pipeline {
                                 sh '''
                                     export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
                                     ansible-playbook sources/ansible-ressources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key --private-key devops.pem -l ic_webapp_server_dev
-                                    echo "Cleaning workspace after starting"
-                                    rm -f vault.key id_rsa id_rsa.pub password devops.pem
                                 '''
                             }
                         }
@@ -284,7 +282,7 @@ pipeline {
                                     export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
                                     ansible-playbook sources/ansible-ressources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key  -l ic_webapp
                                     echo "Cleaning workspace after starting"
-                                    rm -f vault.key id_rsa id_rsa.pub password
+                                    rm -f vault.key id_rsa id_rsa.pub password devops.pem
                                 '''
                             }
                         }

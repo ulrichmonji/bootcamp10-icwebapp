@@ -98,11 +98,14 @@ pipeline {
           steps {
              script {
                sh '''
+                  echo "Generating aws credentials "
                   mkdir -p ~/.aws
                   echo "[default]" > ~/.aws/credentials
                   echo "aws_access_key_id=$AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
                   echo "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
                   chmod 400 ~/.aws/credentials
+                  echo "Generating aws private key"
+                  echo $PRIVATE_AWS_KEY > devops.pem
                   cd "./sources/terraform ressources/app"
                   terraform init 
                   terraform destroy --auto-approve
@@ -133,8 +136,6 @@ pipeline {
                   #echo "Generating public key"
                   #echo $PUBLIC_KEY > id_rsa.pub
                   #echo $VAGRANT_PASSWORD > password
-                  #echo "Generating aws private key"
-                  echo $PRIVATE_AWS_KEY > devops.pem
                   chmod 400 devops.pem id_rsa
                   echo "Generating host_vars for EC2 servers"
                   echo "ansible_host: $(awk '{print $2}' public_ip.txt)" >> sources/ansible-ressources/host_vars/odoo_server_dev.yml
@@ -164,7 +165,8 @@ pipeline {
                             apt update -y
                             apt install sshpass -y                            
                             export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                            ansible all -m ping  -l prod -o 
+                            ansible prod -m ping  -o 
+                            ansible dev -m ping  --private-key devops.pem -o 
                         '''
                     }
                 }
@@ -201,7 +203,7 @@ pipeline {
                             script {
                                 sh '''
                                     export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-pgadmin.yml --vault-password-file vault.key  -l pg_admin_server_dev
+                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-pgadmin.yml --vault-password-file vault.key --private-key devops.pem -l pg_admin_server_dev
                                 '''
                             }
                         }
@@ -211,7 +213,7 @@ pipeline {
                             script {
                                 sh '''
                                     export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-odoo.yml --vault-password-file vault.key  -l odoo_server_dev
+                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-odoo.yml --vault-password-file vault.key  --private-key devops.pem -l odoo_server_dev
                                 '''
                             }
                         }
@@ -222,7 +224,7 @@ pipeline {
                             script {
                                 sh '''
                                     export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key  -l ic_webapp_server_dev
+                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key --private-key devops.pem -l ic_webapp_server_dev
                                     echo "Cleaning workspace after starting"
                                     rm -f vault.key id_rsa id_rsa.pub password devops.pem
                                 '''

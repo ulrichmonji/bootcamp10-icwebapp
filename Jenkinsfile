@@ -134,6 +134,8 @@ pipeline {
                   echo "ansible_host: $(terraform output output_eip)" #> ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml
                   echo "ansible_host: $(terraform output output_eip)" > ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml
                   cat ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml
+                  echo "ansible_host: $(terraform output output_eip)" > ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml-backup
+                  cat ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml-backup
                '''
              }
           }
@@ -146,6 +148,8 @@ pipeline {
             stage ("Install Ansible role dependencies") {
                 steps {
                     script {
+                        sh 'cat sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml-backup'
+                        sh 'cat sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml'
                         sh 'echo launch ansible-galaxy install -r roles/requirement.yml if needed'
                     }
                 }

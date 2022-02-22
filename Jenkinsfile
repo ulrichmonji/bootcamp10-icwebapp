@@ -131,7 +131,9 @@ pipeline {
                   terraform init 
                   terraform plan
                   terraform apply --auto-approve
+                  echo "ansible_host: $(terraform output output_eip)" #> ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml
                   echo "ansible_host: $(terraform output output_eip)" > ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml
+                  cat ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml
                '''
              }
           }

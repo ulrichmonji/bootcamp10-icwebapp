@@ -103,11 +103,11 @@ pipeline {
                   rm -rf devops.pem ~/.aws
                   mkdir -p ~/.aws
                   echo "[default]" > ~/.aws/credentials
-                  echo "aws_access_key_id=$AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
-                  echo "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
+                  echo -e"aws_access_key_id=$AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
+                  echo -e "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
                   chmod 400 ~/.aws/credentials
                   echo "Generating aws private key"
-                  echo $PRIVATE_AWS_KEY > devops.pem
+                  echo -e $PRIVATE_AWS_KEY > devops.pem
                   chmod 400 devops.pem
                   cd "./sources/terraform ressources/app"
                   terraform init 
@@ -133,13 +133,13 @@ pipeline {
                   echo "Cleaning workspace before starting"
                   rm -f vault.key id_rsa id_rsa.pub password
                   echo "Generating vault key"
-                  echo $VAULT_KEY > vault.key
+                  echo -e $VAULT_KEY > vault.key
                   echo "Generating private key"
-                  echo $PRIVATE_KEY > id_rsa
+                  echo -e $PRIVATE_KEY > id_rsa
                   chmod 400 id_rsa vault.key
                   #echo "Generating public key"
-                  #echo $PUBLIC_KEY > id_rsa.pub
-                  #echo $VAGRANT_PASSWORD > password
+                  #echo -e $PUBLIC_KEY > id_rsa.pub
+                  #echo -e $VAGRANT_PASSWORD > password
                   echo "Generating host_vars for EC2 servers"
                   echo "ansible_host: $(awk '{print $2}' public_ip.txt)" >> sources/ansible-ressources/host_vars/odoo_server_dev.yml
                   echo "ansible_host: $(awk '{print $2}' public_ip.txt)" >> sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml

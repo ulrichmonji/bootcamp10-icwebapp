@@ -12,7 +12,7 @@ pipeline {
     }
     agent none
     stages {
-       /*stage('Build image') {
+       stage('Build image') {
            agent any
            steps {
               script {
@@ -20,8 +20,8 @@ pipeline {
 
               }
            }
-       }*/
-       /*stage('Scan Image with  SNYK') {
+       }
+       stage('Scan Image with  SNYK') {
             agent any
             environment{
                 SNYK_TOKEN = credentials('snyk_token')
@@ -36,8 +36,8 @@ pipeline {
                     '''
                 }
             }
-       }*/
-       /*stage('Run container based on builded image') {
+       }
+       stage('Run container based on builded image') {
           agent any
           steps {
             script {
@@ -70,9 +70,9 @@ pipeline {
                '''
              }
           }
-       }*/
+       }
 
-       /*stage ('Login and Push Image on docker hub') {
+       stage ('Login and Push Image on docker hub') {
           agent any
           steps {
              script {
@@ -82,9 +82,9 @@ pipeline {
                '''
              }
           }
-       }*/
+       }
 
-       stage ('Deploy AWS EC2 with terraform') {
+        stage ('Build EC2 on AWS with terraform') {
           agent { 
                     docker { 
                             image 'jenkins/jnlp-agent-terraform'  
@@ -117,9 +117,9 @@ pipeline {
                '''
              }
           }
-       }
+        }
 
-       stage ('Prepare Ansible environment') {
+        stage ('Prepare Ansible environment') {
           agent any
           environment {
             VAULT_KEY = credentials('vault_key')
@@ -148,152 +148,90 @@ pipeline {
                '''
              }
           }
-       }
-                    
-      stage('Deploy application') {
-        agent { docker { image 'registry.gitlab.com/robconnolly/docker-ansible:latest'  } }
-        stages {
-            stage ("Install Ansible role dependencies") {
-                steps {
-                    script {
-                        sh 'echo launch ansible-galaxy install -r roles/requirement.yml if needed'
-                    }
-                }
-            }
-
-            stage ("Ping  targeted hosts (prod only)") {
-                steps {
-                    script {
-                        sh '''
-                            apt update -y
-                            apt install sshpass -y                            
-                            export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                            ansible prod -m ping  -o 
-                            ansible dev -m ping  --private-key devops.pem -o 
-                        '''
-                    }
-                }
-            }
-
-            stage ("Check all playbook syntax") {
-                steps {
-                    script {
-                        sh '''
-                            export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                            ansible-lint -x 306 sources/ansible-ressources/playbooks/* || echo passing linter                                     
-                        '''
-                    }
-                }
-            }
-/*---------------------*/
-            stage ("Deploy in DEV for testing") {
-                when { expression { GIT_BRANCH == 'origin/main'} }                     
-                stages {                                       
-                    stage ("DEV - Install Docker on ec2 hosts") {
-                        steps {
-                            script {
-
-                                sh '''
-                                    export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                                    ansible-playbook sources/ansible-ressources/playbooks/install-docker.yml --vault-password-file vault.key  --private-key devops.pem -l ic_webapp_server_dev
-                                '''                                
-                            }
-                        }
-                    }
-
-                    stage ("DEV - Deploy pgadmin") {
-                        steps {
-                            script {
-                                sh '''
-                                    export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-pgadmin.yml --vault-password-file vault.key --private-key devops.pem -l pg_admin_server_dev
-                                '''
-                            }
-                        }
-                    }
-                    stage ("DEV - Deploy odoo") {
-                        steps {
-                            script {
-                                sh '''
-                                    export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-odoo.yml --vault-password-file vault.key  --private-key devops.pem -l odoo_server_dev
-                                '''
-                            }
-                        }
-                    }
-
-                    stage ("DEV - Deploy ic-webapp") {
-                        steps {
-                            script {
-                                sh '''
-                                    export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key --private-key devops.pem -l ic_webapp_server_dev
-                                '''
-                            }
-                        }
-                    }
-
-
-                }
-            }
-
-
-/*---------------------*/
-            stage ("Deploy in PRODUCTION") {
-                when { expression { GIT_BRANCH == 'origin/main'} }                     
-                stages {                                       
-                    stage ("PRODUCTION - Install Docker on all hosts") {
-                        steps {
-                            script {
-
-                                sh '''
-                                    export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                                    ansible-playbook sources/ansible-ressources/playbooks/install-docker.yml --vault-password-file vault.key  -l odoo_server,pg_admin_server
-                                '''                                
-                            }
-                        }
-                    }
-
-                    stage ("PRODUCTION - Deploy pgadmin") {
-                        steps {
-                            script {
-                                sh '''
-                                    export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-pgadmin.yml --vault-password-file vault.key  -l pg_admin
-                                '''
-                            }
-                        }
-                    }
-                    stage ("PRODUCTION - Deploy odoo") {
-                        steps {
-                            script {
-                                sh '''
-                                    export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-odoo.yml --vault-password-file vault.key  -l odoo
-                                '''
-                            }
-                        }
-                    }
-
-                    stage ("PRODUCTION - Deploy ic-webapp") {
-                        steps {
-                            script {
-                                sh '''
-                                    export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                                    ansible-playbook sources/ansible-ressources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key  -l ic_webapp
-                                    echo "Cleaning workspace after starting"
-                                    rm -f vault.key id_rsa id_rsa.pub password devops.pem
-                                '''
-                            }
-                        }
-                    }
-
-
-                }
-            }
-
         }
-      }
+                  
+        stage('Deploy DEV  env for testing') {
+            agent { docker { image 'registry.gitlab.com/robconnolly/docker-ansible:latest'  } }
+            stages {
+                stage ("Install Ansible role dependencies") {
+                    steps {
+                        script {
+                            sh 'echo launch ansible-galaxy install -r roles/requirement.yml if needed'
+                        }
+                    }
+                }
+
+                stage ("DEV - Ping target hosts") {
+                    steps {
+                        script {
+                            sh '''
+                                apt update -y
+                                apt install sshpass -y                            
+                                export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
+                                ansible dev -m ping  --private-key devops.pem -o 
+                            '''
+                        }
+                    }
+                }
+
+                stage ("Check all playbook syntax") {
+                    steps {
+                        script {
+                            sh '''
+                                export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
+                                ansible-lint -x 306 sources/ansible-ressources/playbooks/* || echo passing linter                                     
+                            '''
+                        }
+                    }
+                }
+
+                stage ("DEV - Install Docker on ec2 hosts") {
+                    steps {
+                        script {
+
+                            sh '''
+                                export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
+                                ansible-playbook sources/ansible-ressources/playbooks/install-docker.yml --vault-password-file vault.key  --private-key devops.pem -l ic_webapp_server_dev
+                            '''                                
+                        }
+                    }
+                }
+
+                stage ("DEV - Deploy pgadmin") {
+                    steps {
+                        script {
+                            sh '''
+                                export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
+                                ansible-playbook sources/ansible-ressources/playbooks/deploy-pgadmin.yml --vault-password-file vault.key --private-key devops.pem -l pg_admin_server_dev
+                            '''
+                        }
+                    }
+                }
+
+                stage ("DEV - Deploy odoo") {
+                    steps {
+                        script {
+                            sh '''
+                                export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
+                                ansible-playbook sources/ansible-ressources/playbooks/deploy-odoo.yml --vault-password-file vault.key  --private-key devops.pem -l odoo_server_dev
+                            '''
+                        }
+                    }
+                }
+
+                stage ("DEV - Deploy ic-webapp") {
+                    steps {
+                        script {
+                            sh '''
+                                export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
+                                ansible-playbook sources/ansible-ressources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key --private-key devops.pem -l ic_webapp_server_dev
+                            '''
+                        }
+                    }
+                }
+
+            }
+        }
 
         stage ("Delete Dev environment") {
             agent { docker { image 'jenkins/jnlp-agent-terraform'  } }
@@ -304,8 +242,8 @@ pipeline {
             }
             steps {
                 script {       
-                    timeout(time: 1, unit: "MINUTES") {
-                        input message: "Confirmer vous la suppression de ressources dans AWS ?", ok: 'Yes'
+                    timeout(time: 30, unit: "MINUTES") {
+                        input message: "Confirmer vous la suppression de la dev dans AWS ?", ok: 'Yes'
                     } 
                     sh'''
                         cd "./sources/terraform ressources/app"
@@ -315,7 +253,75 @@ pipeline {
                     '''                            
                 }
             }
-        }   
+        }  
+        stage ("Deploy in PRODUCTION") {
+            when { expression { GIT_BRANCH == 'origin/prod'} }
+            agent { docker { image 'registry.gitlab.com/robconnolly/docker-ansible:latest'  } }                     
+            stages {
+                stage ("PRODUCTION - Ping target hosts") {
+                    steps {
+                        script {
+                            sh '''
+                                apt update -y
+                                apt install sshpass -y                            
+                                export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
+                                ansible prod -m ping  -o
+                            '''
+                        }
+                    }
+                }                                                       
+                stage ("PRODUCTION - Install Docker on all hosts") {
+                    steps {
+                        script {
+                            timeout(time: 30, unit: "MINUTES") {
+                                input message: "Etes vous certains de vouloir cette MEP ?", ok: 'Yes'
+                            }                            
+
+                            sh '''
+                                export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
+                                ansible-playbook sources/ansible-ressources/playbooks/install-docker.yml --vault-password-file vault.key  -l odoo_server,pg_admin_server
+                            '''                                
+                        }
+                    }
+                }
+
+                stage ("PRODUCTION - Deploy pgadmin") {
+                    steps {
+                        script {
+                            sh '''
+                                export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
+                                ansible-playbook sources/ansible-ressources/playbooks/deploy-pgadmin.yml --vault-password-file vault.key  -l pg_admin
+                            '''
+                        }
+                    }
+                }
+                stage ("PRODUCTION - Deploy odoo") {
+                    steps {
+                        script {
+                            sh '''
+                                export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
+                                ansible-playbook sources/ansible-ressources/playbooks/deploy-odoo.yml --vault-password-file vault.key  -l odoo
+                            '''
+                        }
+                    }
+                }
+
+                stage ("PRODUCTION - Deploy ic-webapp") {
+                    steps {
+                        script {
+                            sh '''
+                                export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
+                                ansible-playbook sources/ansible-ressources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key  -l ic_webapp
+                                echo "Cleaning workspace after starting"
+                                rm -f vault.key id_rsa id_rsa.pub password devops.pem
+                            '''
+                        }
+                    }
+                }
+
+
+            }
+        } 
     }  
 
     post {

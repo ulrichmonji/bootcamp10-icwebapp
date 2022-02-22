@@ -128,11 +128,12 @@ pipeline {
                   echo "aws_secret_access_key=$AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
                   chmod 400 ~/.aws/credentials
                   cd "./sources/terraform ressources/app"
+                  terraform destroy --auto-approve
                   terraform init 
                   terraform plan
                   terraform apply --auto-approve
                   echo "ansible_host: $(terraform output output_eip)" #> ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml
-                  echo "ansible_host: $(terraform output output_eip)" > ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml
+                  #echo "ansible_host: $(terraform output output_eip)" > ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml
                   cat ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml
                   echo "ansible_host: $(terraform output output_eip)" > ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml-backup
                   cat ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml-backup

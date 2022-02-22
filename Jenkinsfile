@@ -130,7 +130,7 @@ pipeline {
                   cd "./sources/terraform ressources/app"
                   terraform init 
                   terraform plan
-                  terraform destroy --auto-approve
+                  terraform apply --auto-approve
                   echo "ansible_host: $(terraform output output_eip)" > ../../ansible-ressources/host_vars/ic_webapp_server_dev.yml
                '''
              }

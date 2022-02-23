@@ -146,6 +146,12 @@ Le déploiement sera fait sur les VMs virtualbox, avec les commandes suivantes d
 Une fois terminé, il faut tester le fonctionnel sur le navigateur
 
 #### Mise en place de la CD dans le Pipeline
+Ici On a deux pipelines : 
+1. Le tag [v2.0](https://github.com/ulrichmonji/ic-webapp/blob/v2.0/Jenkinsfile)
+Il déploie uniquement sur des VMs virtualbox (la PROD). C'est le plus simple
+
+2. Le tag [v3.0](https://github.com/ulrichmonji/ic-webapp/blob/v3.0/Jenkinsfile)
+Il déploie sur un environnement de test (la DEV) provisionné sur une Machine AWS avant de déployer en PROD sur des VM virtualbox
 
 #### Prérequis
 - Il faut créer un bucket S3 en virginie du nord (nommé **terraform-backend-ulrich** pour moi)

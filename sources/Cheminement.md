@@ -119,17 +119,39 @@ Pipelne :
 
 
 ## Partie III : CD avec Jenkins et Ansible
-VOici le Pipeline complet mis en place : 
+Voici un schema complet du Pipeline mis en place dans ce corrigé: 
+
+
 ![](Pipeline.PNG)
-Il faut créer un bucket S3 en virginie du nord nommé terraform-backend-ulrich
-## Test Unitaires des playbook ansible
+
+
+### Test Mannuels des playbook ansible (Installer ansible sur le serveur de test)
+Dans un premier temps, nous allons tester le déploiement via ansible manuellement, sans Jenkins.
+Ca nous permettra de visualiser ce qui devra être embarqué dans le Jenkinsfile
+
+Dans mon cas, j'ai utilisé la machine Jenkins, et Ansible était déja installé dessus, sinon, voici les commandes d'installation d'Ansible
 > yum -y install epel-release
 > yum install -y python3
 > curl -sS https://bootstrap.pypa.io/pip/3.6/get-pip.py | sudo python3
 > /usr/local/bin/pip3 install ansible
 > sudo yum install -y sshpass
 
-## Configuration du Jenkinsfile pour intégrer le déploiement Ansible
+Le déploiement sera fait sur les VMs virtualbox, avec les commandes suivantes depuis le serveur Jenkins : 
+
+> ansible-playbook install-docker.yml 
+> ansible-playbook deploy-odoo.yml -l odoo
+> ansible-playbook deploy-pgadmin.yml -l pg_admin
+> ansible-playbook deploy-ic-webapp.yml -l ic_webapp
+
+Une fois terminé, il faut tester le fonctionnel sur le navigateur
+
+#### Mise en place de la CD dans le Pipeline
+
+#### Prérequis
+- Il faut créer un bucket S3 en virginie du nord (nommé **terraform-backend-ulrich** pour moi)
+
+#### Configuration du Jenkinsfile pour intégrer le déploiement Ansible
+
 ##### Secret et paramètres
 En plus des paramètres et tokens utilisé à la partie CI, on aura aussi besoin des paramètres suivants : 
 
@@ -148,11 +170,11 @@ En plus des paramètres et tokens utilisé à la partie CI, on aura aussi besoin
 ##### Shared Library
 Le pipeline utilise une librairie partagée nommée [ulrich-shared-library](https://github.com/ulrichmonji/sharedLibrary.git).
 
-#### Slack
-**Channel** : #test_notif_jenkins
+##### Slack
+- Channel à utiliser  : **Channel** : #test_notif_jenkins
+- Sous-domaine de l’équipe : **pozosworkspace**
 
-
-#### Ports applicatif
+##### Ports applicatif configuré
 - ic-webapp : 8000
 - odoo : 8069
 - pgadmin : 5050

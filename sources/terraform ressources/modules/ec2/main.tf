@@ -13,7 +13,7 @@ resource "aws_instance" "ic-webapp-ec2" {
   }
 
   provisioner "local-exec" {
-    command = "echo IP: ${var.public_ip} > /var/jenkins_home/workspace/ic-webapp/public_ip.txt"
+    command = "echo IP: ${var.public_ip} > /tmp/public_ip.txt"
   }
 
 }

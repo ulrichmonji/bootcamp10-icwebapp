@@ -149,3 +149,20 @@ Le pipeline utilise une librairie partagée nommée [ulrich-shared-library](http
 
 #### Slack
 **Channel** : #test_notif_jenkins
+
+#### Récuperation de l'IP publique du serveur de Dev
+taper cette commande sur le serveur Jenkins
+> docker exec -it jenkins_jenkins_1 cat /tmp/public_ip.txt
+
+#### Ports applicatif
+- ic-webapp : 8000
+- odoo : 8069
+- pgadmin : 5050
+
+
+### Ameliorations
+- Utilisation du plugin [Workspace Cleanup](https://plugins.jenkins.io/ws-cleanup/) pour nettoyer le workspac
+- Automatisation de la mise en place d'une authen par clés publique/prive entre les serveurs de prod. [Exemple](https://linuxtechlab.com/how-to-use-ssh-command-with-password-in-single-line/)
+- Mise des roles ansible sur un repos Git et install de ces roles via Ansible-Galaxy
+- Création d'un fichier  ansible contenant les secret (mdp du user vagrant), fichier à vaulter biensûr
+

@@ -32,25 +32,25 @@ Prendre [celui ci](https://github.com/diranetafen/cursus-devops/tree/master/vagr
 - Lancer Minikube avec **minikube start --driver=none**
 
 #### Une fois minikube OK, télécharger les sources dans la VM minikube (cette VM contient déja docker installé)
-> git clone https://github.com/choco1992/ic-webapp.git
-> cd ic-webapp
+>             git clone https://github.com/choco1992/ic-webapp.git
+>             cd ic-webapp
 #### Lancer le build de l'image et tester le fonctionnement du conteneur :
-> docker build --no-cache -f ./sources/app/${DOCKERFILE_NAME} -t $IMAGE_NAME:$IMAGE_TAG ./sources/app
->docker run -d --name test-ic-webapp -p ${APP_EXPOSED_PORT}:8080 ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG
+>             docker build --no-cache -f ./sources/app/${DOCKERFILE_NAME} -t $IMAGE_NAME:$IMAGE_TAG ./sources/app
+>             docker run -d --name test-ic-webapp -p ${APP_EXPOSED_PORT}:8080 ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG
 #### RDV dans le navigateur de votre machine, taper http://**<votre_ip_machine>**:**${APP_EXPOSED_PORT}** pour finaliser le test
 #### Supprimer le conteneur une fois le test validé et pousser l'image dans dockerhub
-> docker rm -f test-ic-webapp
-> docker tag $IMAGE_NAME:$IMAGE_TAG ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG
-> docker login
-> docker push ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG
+>             docker rm -f test-ic-webapp
+>             docker tag $IMAGE_NAME:$IMAGE_TAG ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG
+>             docker login
+>             docker push ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG
 
 ### Automatisation via docker-compose **(Bonus)**
 #### On créé les répertoires devant servir de volumes et on set les droits. Pour des besoins de faciliter, on va attribuer tous les droits sur ces foldes
-> sudo mkdir -p /data_docker/lib-odoo /data_docker/pgadmin4 /data_docker/postgres /data_docker/addons /data_docker/config
-> sudo chmod 777 -R  /data_docker/lib-odoo /data_docker/pgadmin4 /data_docker/postgres /data_docker/addons /data_docker/config 
+>             sudo mkdir -p /data_docker/lib-odoo /data_docker/pgadmin4 /data_docker/postgres /data_docker/addons /data_docker/config
+>             sudo chmod 777 -R  /data_docker/lib-odoo /data_docker/pgadmin4 /data_docker/postgres /data_docker/addons /data_docker/config 
 #### Installation docker-compose
-> sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-> sudo chmod +x /usr/local/bin/docker-compose
+>             sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+>             sudo chmod +x /usr/local/bin/docker-compose
 
 #### **Infos**
 le docker-compose contient les variables ODOO_URL et  PGADMIN_URL qui doivent etre renseignées avec l'ip machine de la VM vagrant.
@@ -68,15 +68,14 @@ Du coup la variable d'en HOST_IP doit contenir cette IP machine. Sur notre infra
 
 ### Déploiement sur K8S
 #### On créé les répertoires devant servir de volumes et on set les droits. Pour des besoins de faciliter, on va attribuer tous les droits sur ces foldes
-> sudo mkdir -p /data_k8s/lib-odoo /data_k8s/pgadmin4 /data_k8s/postgres /data_k8s/addons /data_k8s/config
-
-> sudo chmod 777 -R  /data_k8s/lib-odoo /data_k8s/pgadmin4 /data_k8s/postgres /data_k8s/addons /data_k8s/config
+>             sudo mkdir -p /data_k8s/lib-odoo /data_k8s/pgadmin4 /data_k8s/postgres /data_k8s/addons /data_k8s/config
+>             sudo chmod 777 -R  /data_k8s/lib-odoo /data_k8s/pgadmin4 /data_k8s/postgres /data_k8s/addons /data_k8s/config
 #### Aller dans le dossier manifestes-k8s et lancer les manifestes
-> cd ../manifestes-k8s
-> kubectl apply -f ic-webapp/
-> kubectl apply -f postgres/
-> kubectl apply -f odoo/
-> kubectl apply -f pg-admin/
+>             cd ../manifestes-k8s
+>             kubectl apply -f ic-webapp/
+>             kubectl apply -f postgres/
+>             kubectl apply -f odoo/
+>             kubectl apply -f pg-admin/
 #### RDV dans le navigateur de votre machine, taper http://**<votre_ip_machine>**:**30080** pour finaliser le test
 
 
@@ -88,7 +87,7 @@ Ici, le Jenkinsfile est celui du [tag v1.0](https://github.com/choco1992/ic-weba
 #### Lancer le Jenkins
 #### Récupération du token pour L'IHM et creation de votre compte
 Taper la commande suivante sur la VM Jenkins
-> docker exec -it jenkins_jenkins_1 cat /var/jenkins_home/secrets/initialAdminPassword
+>             docker exec -it jenkins_jenkins_1 cat /var/jenkins_home/secrets/initialAdminPassword
 
 Une fois le token récupérer, se connecter a l'IHM Jenkins sur le port 8080 et insérer le token
 
@@ -131,18 +130,18 @@ Dans un premier temps, nous allons tester le déploiement via ansible manuelleme
 Ca nous permettra de visualiser ce qui devra être embarqué dans le Jenkinsfile
 
 Dans mon cas, j'ai utilisé la machine Jenkins, et Ansible était déja installé dessus, sinon, voici les commandes d'installation d'Ansible
-> yum -y install epel-release
-> yum install -y python3
-> curl -sS https://bootstrap.pypa.io/pip/3.6/get-pip.py | sudo python3
-> /usr/local/bin/pip3 install ansible
-> sudo yum install -y sshpass
+>             yum -y install epel-release
+>             yum install -y python3
+>             curl -sS https://bootstrap.pypa.io/pip/3.6/get-pip.py | sudo python3
+>             /usr/local/bin/pip3 install ansible
+>             sudo yum install -y sshpass
 
 Le déploiement sera fait sur les VMs virtualbox, avec les commandes suivantes depuis le serveur Jenkins : 
 
-> ansible-playbook install-docker.yml 
-> ansible-playbook deploy-odoo.yml -l odoo
-> ansible-playbook deploy-pgadmin.yml -l pg_admin
-> ansible-playbook deploy-ic-webapp.yml -l ic_webapp
+>             ansible-playbook install-docker.yml 
+>             ansible-playbook deploy-odoo.yml -l odoo
+>             ansible-playbook deploy-pgadmin.yml -l pg_admin
+>             ansible-playbook deploy-ic-webapp.yml -l ic_webapp
 
 Une fois terminé, il faut tester le fonctionnel sur le navigateur
 

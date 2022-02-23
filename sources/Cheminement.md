@@ -95,6 +95,7 @@ Une fois le token récupérer, se connecter a l'IHM Jenkins sur le port 8080 et 
 - Docker
 - Docker Pipeline
 - docker-build-step
+- Slack Notification
 
 #### Caractéristiques du job Pipeline 
 ##### Secret et paramètres
@@ -135,7 +136,7 @@ En plus des paramètres et tokens utilisé à la partie CI, on aura aussi besoin
 |----------------------|------------------|-----------------|------------------------------|
 |     vault_key        | secret text      |      N/A        |  Mot de pass vault ansible   |
 |    private_key       | secret file      |      N/A        |   Clés privé ssh du user     |
-|    public_key        | secret text      |      N/A        |   Clés publique ssh du user  |
+|    public_key        | secret file      |      N/A        |   Clés publique ssh du user  |
 |  vagrant_password    | secret text      |      N/A        |    mdp du user vagrant       |
 |       slack          | secret text      |      N/A        |   Token channel slack        |
 |  aws_access_key_id   | secret text      |      N/A        |       access key aws         |
@@ -146,3 +147,5 @@ En plus des paramètres et tokens utilisé à la partie CI, on aura aussi besoin
 ##### Shared Library
 Le pipeline utilise une librairie partagée nommée [ulrich-shared-library](https://github.com/ulrichmonji/sharedLibrary.git).
 
+#### Slack
+**Channel** : #test_notif_jenkins

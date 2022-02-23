@@ -144,6 +144,9 @@ pipeline {
                   echo "ansible_host: $(awk '{print $2}' public_ip.txt)" > sources/ansible-ressources/host_vars/odoo_server_dev.yml
                   echo "ansible_host: $(awk '{print $2}' public_ip.txt)" > sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
                   echo "ansible_host: $(awk '{print $2}' public_ip.txt)" > sources/ansible-ressources/host_vars/pg_admin_server_dev.yml
+                  echo "Generating host_pgadmin_ip and  host_odoo_ip variables"
+                  echo "host_odoo_ip: $(awk '{print $2}' public_ip.txt)" >> sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
+                  echo "host_pgadmin_ip: $(awk '{print $2}' public_ip.txt)" >> sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
 
                '''
              }

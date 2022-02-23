@@ -100,7 +100,7 @@ pipeline {
                sh '''
                   echo "Generating aws credentials"
                   echo "Deleting older if exist"
-                  rm -rf devops.pem ~/.aws /tmp/public_ip.txt
+                  rm -rf devops.pem ~/.aws public_ip.txt
                   mkdir -p ~/.aws
                   echo "[default]" > ~/.aws/credentials
                   echo -e "aws_access_key_id=$AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
@@ -141,12 +141,12 @@ pipeline {
                   #echo -e $PUBLIC_KEY > id_rsa.pub
                   #echo -e $VAGRANT_PASSWORD > password
                   echo "Generating host_vars for EC2 servers"
-                  echo "ansible_host: $(awk '{print $2}' /tmp/public_ip.txt)" > sources/ansible-ressources/host_vars/odoo_server_dev.yml
-                  echo "ansible_host: $(awk '{print $2}' /tmp/public_ip.txt)" > sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
-                  echo "ansible_host: $(awk '{print $2}' /tmp/public_ip.txt)" > sources/ansible-ressources/host_vars/pg_admin_server_dev.yml
+                  echo "ansible_host: $(awk '{print $2}' public_ip.txt)" > sources/ansible-ressources/host_vars/odoo_server_dev.yml
+                  echo "ansible_host: $(awk '{print $2}' public_ip.txt)" > sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
+                  echo "ansible_host: $(awk '{print $2}' public_ip.txt)" > sources/ansible-ressources/host_vars/pg_admin_server_dev.yml
                   echo "Generating host_pgadmin_ip and  host_odoo_ip variables"
-                  echo "host_odoo_ip: $(awk '{print $2}' /tmp/public_ip.txt)" >> sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
-                  echo "host_pgadmin_ip: $(awk '{print $2}' /tmp/public_ip.txt)" >> sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
+                  echo "host_odoo_ip: $(awk '{print $2}' public_ip.txt)" >> sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
+                  echo "host_pgadmin_ip: $(awk '{print $2}' public_ip.txt)" >> sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
 
                '''
              }
@@ -157,7 +157,6 @@ pipeline {
             agent   {     
                         docker { 
                             image 'registry.gitlab.com/robconnolly/docker-ansible:latest'
-                            args '-v /tmp/public_ip.txt:/tmp/public_ip.txt'
                         } 
                     }
             stages {
@@ -334,7 +333,7 @@ pipeline {
             script {
                 sh '''
                     echo "Manually Cleaning workspace after starting"
-                    rm -f vault.key id_rsa id_rsa.pub password devops.pem /tmp/public_ip.txt
+                    rm -f vault.key id_rsa id_rsa.pub password devops.pem public_ip.txt
                 '''
                 slackNotifier currentBuild.result
             }

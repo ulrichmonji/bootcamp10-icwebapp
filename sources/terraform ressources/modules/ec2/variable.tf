@@ -28,6 +28,11 @@ variable "public_ip" {
   default = "NULL"
 }
 
+variable "projet_name" {
+  type    = string
+  default = "ic-webapp"
+}
+
 variable "AZ" {
   type    = string
   default = "us-east-1b"

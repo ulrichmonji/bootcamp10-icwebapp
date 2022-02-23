@@ -15,6 +15,8 @@ pipeline {
        stage('Build image') {
            agent any
            steps {
+              // Clean worspace before build
+              cleanWs()
               script {
                 sh 'docker build --no-cache -f ./sources/app/${DOCKERFILE_NAME} -t ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG ./sources/app'
 
@@ -321,8 +323,6 @@ pipeline {
                         }
                     }
                 }
-
-
             }
         } 
     }  
@@ -332,6 +332,10 @@ pipeline {
             script {
                 slackNotifier currentBuild.result
             }
+            cleanWs(cleanWhenNotBuilt: false,
+                    deleteDirs: true,
+                    disableDeferredWipeout: true,
+                    notFailBuild: true)
         }
     }    
 }

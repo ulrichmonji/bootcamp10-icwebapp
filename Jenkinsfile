@@ -100,7 +100,7 @@ pipeline {
                sh '''
                   echo "Generating aws credentials"
                   echo "Deleting older if exist"
-                  rm -rf devops.pem ~/.aws
+                  rm -rf devops.pem ~/.aws /tmp/public_ip.txt
                   mkdir -p ~/.aws
                   echo "[default]" > ~/.aws/credentials
                   echo -e "aws_access_key_id=$AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
@@ -154,7 +154,12 @@ pipeline {
         }
                   
         stage('Deploy DEV  env for testing') {
-            agent { docker { image 'registry.gitlab.com/robconnolly/docker-ansible:latest'  } }
+            agent   {     
+                        docker { 
+                            image 'registry.gitlab.com/robconnolly/docker-ansible:latest'
+                            args '-v /tmp/public_ip.txt:/tmp/public_ip.txt'
+                        } 
+                    }
             stages {
                 stage ("Install Ansible role dependencies") {
                     steps {
@@ -315,8 +320,7 @@ pipeline {
                             sh '''
                                 export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
                                 ansible-playbook sources/ansible-ressources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key  -l ic_webapp
-                                echo "Cleaning workspace after starting"
-                                rm -f vault.key id_rsa id_rsa.pub password devops.pem
+
                             '''
                         }
                     }
@@ -328,12 +332,13 @@ pipeline {
     post {
         always {
             script {
+                sh '''
+                    echo "Manually Cleaning workspace after starting"
+                    rm -f vault.key id_rsa id_rsa.pub password devops.pem /tmp/public_ip.txt
+                '''
                 slackNotifier currentBuild.result
             }
-            cleanWs(cleanWhenNotBuilt: false,
-                    deleteDirs: true,
-                    disableDeferredWipeout: true,
-                    notFailBuild: true)
+            cleanWs()
         }
     }    
 }

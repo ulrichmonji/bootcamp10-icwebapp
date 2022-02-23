@@ -100,7 +100,7 @@ pipeline {
                sh '''
                   echo "Generating aws credentials"
                   echo "Deleting older if exist"
-                  rm -rf devops.pem ~/.aws public_ip.txt
+                  rm -rf devops.pem ~/.aws 
                   mkdir -p ~/.aws
                   echo "[default]" > ~/.aws/credentials
                   echo -e "aws_access_key_id=$AWS_ACCESS_KEY_ID" >> ~/.aws/credentials

@@ -15,8 +15,6 @@ pipeline {
        stage('Build image') {
            agent any
            steps {
-              // Clean worspace before build
-              cleanWs()
               script {
                 sh 'docker build --no-cache -f ./sources/app/${DOCKERFILE_NAME} -t ${DOCKERHUB_ID}/$IMAGE_NAME:$IMAGE_TAG ./sources/app'
 
@@ -102,7 +100,7 @@ pipeline {
                sh '''
                   echo "Generating aws credentials"
                   echo "Deleting older if exist"
-                  rm -rf devops.pem ~/.aws
+                  rm -rf devops.pem ~/.aws public_ip.txt
                   mkdir -p ~/.aws
                   echo "[default]" > ~/.aws/credentials
                   echo -e "aws_access_key_id=$AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
@@ -143,12 +141,12 @@ pipeline {
                   #echo -e $PUBLIC_KEY > id_rsa.pub
                   #echo -e $VAGRANT_PASSWORD > password
                   echo "Generating host_vars for EC2 servers"
-                  echo "ansible_host: $(awk '{print $2}' /tmp/public_ip.txt)" > sources/ansible-ressources/host_vars/odoo_server_dev.yml
-                  echo "ansible_host: $(awk '{print $2}' /tmp/public_ip.txt)" > sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
-                  echo "ansible_host: $(awk '{print $2}' /tmp/public_ip.txt)" > sources/ansible-ressources/host_vars/pg_admin_server_dev.yml
+                  echo "ansible_host: $(awk '{print $2}' public_ip.txt)" > sources/ansible-ressources/host_vars/odoo_server_dev.yml
+                  echo "ansible_host: $(awk '{print $2}' public_ip.txt)" > sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
+                  echo "ansible_host: $(awk '{print $2}' public_ip.txt)" > sources/ansible-ressources/host_vars/pg_admin_server_dev.yml
                   echo "Generating host_pgadmin_ip and  host_odoo_ip variables"
-                  echo "host_odoo_ip: $(awk '{print $2}' /tmp/public_ip.txt)" >> sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
-                  echo "host_pgadmin_ip: $(awk '{print $2}' /tmp/public_ip.txt)" >> sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
+                  echo "host_odoo_ip: $(awk '{print $2}' public_ip.txt)" >> sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
+                  echo "host_pgadmin_ip: $(awk '{print $2}' public_ip.txt)" >> sources/ansible-ressources/host_vars/ic_webapp_server_dev.yml
 
                '''
              }
@@ -156,7 +154,11 @@ pipeline {
         }
                   
         stage('Deploy DEV  env for testing') {
-            agent { docker { image 'registry.gitlab.com/robconnolly/docker-ansible:latest'  } }
+            agent   {     
+                        docker { 
+                            image 'registry.gitlab.com/robconnolly/docker-ansible:latest'
+                        } 
+                    }
             stages {
                 stage ("Install Ansible role dependencies") {
                     steps {
@@ -173,7 +175,7 @@ pipeline {
                                 apt update -y
                                 apt install sshpass -y                            
                                 export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
-                                ansible dev -m ping  --private-key devops.pem -o 
+                                ansible dev -m ping  --private-key devops.pem --vault-password-file vault.key -o 
                             '''
                         }
                     }
@@ -317,8 +319,7 @@ pipeline {
                             sh '''
                                 export ANSIBLE_CONFIG=$(pwd)/sources/ansible-ressources/ansible.cfg
                                 ansible-playbook sources/ansible-ressources/playbooks/deploy-ic-webapp.yml --vault-password-file vault.key  -l ic_webapp
-                                echo "Cleaning workspace after starting"
-                                rm -f vault.key id_rsa id_rsa.pub password devops.pem
+
                             '''
                         }
                     }
@@ -330,12 +331,13 @@ pipeline {
     post {
         always {
             script {
+                sh '''
+                    echo "Manually Cleaning workspace after starting"
+                    rm -f vault.key id_rsa id_rsa.pub password devops.pem public_ip.txt
+                '''
                 slackNotifier currentBuild.result
             }
-            cleanWs(cleanWhenNotBuilt: false,
-                    deleteDirs: true,
-                    disableDeferredWipeout: true,
-                    notFailBuild: true)
+            cleanWs()
         }
     }    
 }

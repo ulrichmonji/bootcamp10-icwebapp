@@ -119,7 +119,8 @@ Pipelne :
 
 
 ## Partie III : CD avec Jenkins et Ansible
-
+VOici le Pipeline complet mis en place : 
+![](Pipeline.PNG)
 Il faut créer un bucket S3 en virginie du nord nommé terraform-backend-ulrich
 ## Test Unitaires des playbook ansible
 > yum -y install epel-release

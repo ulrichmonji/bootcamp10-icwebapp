@@ -95,7 +95,7 @@ Une fois le token récupérer, se connecter a l'IHM Jenkins sur le port 8080 et 
 - Docker
 - Docker Pipeline
 - docker-build-step
-- Slack Notification
+
 
 #### Caractéristiques du job Pipeline 
 ##### Secret et paramètres
@@ -114,8 +114,6 @@ Pipelne :
     - Definition : Pipeline script from SCM > GIT
         - Branche : */main
         - Script Path : Jenkinsfile
-
-
 
 
 ## Partie III : CD avec Jenkins et Ansible
@@ -148,13 +146,18 @@ Une fois terminé, il faut tester le fonctionnel sur le navigateur
 #### Mise en place de la CD dans le Pipeline
 Ici On a deux pipelines : 
 1. Le tag [v2.0](https://github.com/ulrichmonji/ic-webapp/blob/v2.0/Jenkinsfile)
+
 Il déploie uniquement sur des VMs virtualbox (la PROD). C'est le plus simple
 
 2. Le tag [v3.0](https://github.com/ulrichmonji/ic-webapp/blob/v3.0/Jenkinsfile)
+
 Il déploie sur un environnement de test (la DEV) provisionné sur une Machine AWS avant de déployer en PROD sur des VM virtualbox
 
 #### Prérequis
-- Il faut créer un bucket S3 en virginie du nord (nommé **terraform-backend-ulrich** pour moi)
+- Créer un bucket S3 en virginie du nord (nommé **terraform-backend-ulrich** pour moi)
+- générer des credentials dans AWS (access_key et secret_key)
+- Configurer les secret et paramètres dans Jenkins
+- Rajouter le plugin "Slack Notification"
 
 #### Configuration du Jenkinsfile pour intégrer le déploiement Ansible
 

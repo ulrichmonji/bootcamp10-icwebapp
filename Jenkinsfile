@@ -331,10 +331,10 @@ pipeline {
     post {
         always {
             script {
-                sh '''
+                /*sh '''
                     echo "Manually Cleaning workspace after starting"
                     rm -f vault.key id_rsa id_rsa.pub password devops.pem public_ip.txt
-                '''
+                ''' */
                 slackNotifier currentBuild.result
             }
             cleanWs()

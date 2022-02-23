@@ -58,17 +58,18 @@ ce sont les lignes suivantes :
 >            - "ODOO_URL=http://${HOST_IP}:8069/"
 >            - "PGADMIN_URL=http://${HOST_IP}:5050/"
 Du coup la variable d'en HOST_IP doit contenir cette IP machine. Sur notre infra, on va travailler avec l'interface **enp0s8**. Du coup la commande suivante permets de facilement récupérer cette IP machine : 
-> ip -4  a show enp0s8 | grep inet | awk '{print $2}' | awk -F'/' '{print $1}
+>             ip -4  a show enp0s8 | grep inet | awk '{print $2}' | awk -F'/' '{print $1}
 
 #### lancement de la stack
-> cd docker-ressources
-> HOST_IP=$(ip -4  a show enp0s8 | grep inet | awk '{print $2}' | awk -F'/' '{print $1}')   docker-compose up -d
+>             cd docker-ressources
+>             HOST_IP=$(ip -4  a show enp0s8 | grep inet | awk '{print $2}' | awk -F'/' '{print $1}')   docker-compose up -d
 #### RDV dans le navigateur de votre machine, taper http://**<votre_ip_machine>**:**8080** pour finaliser le test
 
 
 ### Déploiement sur K8S
 #### On créé les répertoires devant servir de volumes et on set les droits. Pour des besoins de faciliter, on va attribuer tous les droits sur ces foldes
 > sudo mkdir -p /data_k8s/lib-odoo /data_k8s/pgadmin4 /data_k8s/postgres /data_k8s/addons /data_k8s/config
+
 > sudo chmod 777 -R  /data_k8s/lib-odoo /data_k8s/pgadmin4 /data_k8s/postgres /data_k8s/addons /data_k8s/config
 #### Aller dans le dossier manifestes-k8s et lancer les manifestes
 > cd ../manifestes-k8s

@@ -150,9 +150,6 @@ Le pipeline utilise une librairie partagée nommée [ulrich-shared-library](http
 #### Slack
 **Channel** : #test_notif_jenkins
 
-#### Récuperation de l'IP publique du serveur de Dev
-taper cette commande sur le serveur Jenkins
-> docker exec -it jenkins_jenkins_1 cat /tmp/public_ip.txt
 
 #### Ports applicatif
 - ic-webapp : 8000

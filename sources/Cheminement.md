@@ -1,5 +1,5 @@
 # Etapes à suivre
-Ce petit tuto explique progressivement  comment mettre en oeuvre le prpojet fil rouge
+Ce petit tuto explique progressivement  comment mettre en oeuvre le projet fil rouge
 
 ## Prérequis
 
@@ -154,8 +154,10 @@ Il déploie uniquement sur des VMs virtualbox (la PROD). C'est le plus simple
 Il déploie sur un environnement de test (la DEV) provisionné sur une Machine AWS avant de déployer en PROD sur des VM virtualbox
 
 #### Prérequis
-- Créer un bucket S3 en virginie du nord (nommé **terraform-backend-ulrich** pour moi)
-- générer des credentials dans AWS (access_key et secret_key)
+- Créer un bucket S3 en région Virginie du nord (nommé **terraform-backend-ulrich** pour moi)
+- S'assurer de la présence du VPC par défaut en région Virginie du Nord, ainsi que son Network et Security Group par default.
+-- Si votre VPC par défaut est absent, l'équipe Eazytraining pourra vous fournir un script permettant de le recréer facilement
+- Générer des credentials dans AWS (access_key et secret_key)
 - Configurer les secret et paramètres dans Jenkins
 - Rajouter le plugin "Slack Notification"
 

@@ -166,6 +166,7 @@ Il déploie sur un environnement de test (la DEV) provisionné sur une Machine A
 ##### Secret et paramètres
 En plus des paramètres et tokens utilisé à la partie CI, on aura aussi besoin des paramètres suivants : 
 
+
 |                      |Type              |Default Value    |Description                   |
 |----------------------|------------------|-----------------|------------------------------|
 |     vault_key        | secret text      |      N/A        |  Mot de pass vault ansible   |
